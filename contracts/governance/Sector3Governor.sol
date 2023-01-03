@@ -17,33 +17,6 @@ contract Sector3Governor is Governor, GovernorSettings, GovernorCountingSimple, 
 
     // The following functions are overrides required by Solidity.
 
-    function votingDelay()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingDelay();
-    }
-
-    function votingPeriod()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingPeriod();
-    }
-
-    function quorum(uint256 blockNumber)
-        public
-        view
-        override(IGovernor, GovernorVotesQuorumFraction)
-        returns (uint256)
-    {
-        return super.quorum(blockNumber);
-    }
-
     function proposalThreshold()
         public
         view
