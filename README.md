@@ -20,3 +20,17 @@ npx hardhat test
 ```shell
 npx hardhat coverage
 ```
+
+## Deploy
+
+Start a local node:
+
+```shell
+npx hardhat node
+```
+
+Deploy the smart contract to the local network:
+
+```shell
+npx hardhat run --network localhost scripts/deploy.ts
+```
