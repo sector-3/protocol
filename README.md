@@ -29,8 +29,20 @@ Start a local node:
 npx hardhat node
 ```
 
-Deploy the smart contract to the local network:
+Deploy a smart contract to the local network:
 
 ```shell
-npx hardhat run --network localhost scripts/deploy.ts
+npx hardhat run --network localhost scripts/deploy-<contract>.ts
+```
+
+Deploy a smart contract to the Goerli test network:
+
+```shell
+npx hardhat run --network goerli scripts/deploy-<contract>.ts
+```
+
+Verify a contract on Etherscan:
+
+```shell
+npx hardhat verify --network <network> <contract address>
 ```
