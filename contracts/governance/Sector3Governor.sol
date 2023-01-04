@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 
-contract MyGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction {
+contract Sector3Governor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction {
     constructor(IVotes _token)
         Governor("Sector#3 Governor")
         GovernorSettings(1 /* 1 block */, 50400 /* 1 week */, 2049e14 /* 0.2049 */)
@@ -16,33 +16,6 @@ contract MyGovernor is Governor, GovernorSettings, GovernorCountingSimple, Gover
     {}
 
     // The following functions are overrides required by Solidity.
-
-    function votingDelay()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingDelay();
-    }
-
-    function votingPeriod()
-        public
-        view
-        override(IGovernor, GovernorSettings)
-        returns (uint256)
-    {
-        return super.votingPeriod();
-    }
-
-    function quorum(uint256 blockNumber)
-        public
-        view
-        override(IGovernor, GovernorVotesQuorumFraction)
-        returns (uint256)
-    {
-        return super.quorum(blockNumber);
-    }
 
     function proposalThreshold()
         public
