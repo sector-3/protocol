@@ -44,5 +44,5 @@ npx hardhat run --network goerli scripts/deploy-<contract>.ts
 Verify a contract on Etherscan:
 
 ```shell
-npx hardhat verify --network <network> <contract address>
+npx hardhat verify --network <network> <contract address> <constructor parameters>
 ```
