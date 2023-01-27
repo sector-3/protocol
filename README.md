@@ -2,6 +2,14 @@
 
 ## Build
 
+Set environment variables:
+
+```shell
+cp .env.sample .env
+```
+
+Install dependencies, and compile source code:
+
 ```shell
 npm install
 npx hardhat clean
