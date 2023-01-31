@@ -46,7 +46,7 @@ contract Sector3DAOPriority is IPriority {
   /**
    * Calculates the current epoch index based on the priority's start time and epoch duration.
    */
-  function getEpochIndex() public view returns (uint256) {
+  function getEpochIndex() public view returns (uint8) {
     uint256 timePassedSinceStart = block.timestamp - startTime;
     uint256 epochDurationInSeconds = 0;
     if (epochDuration == EpochDuration.Weekly) {
@@ -56,6 +56,6 @@ contract Sector3DAOPriority is IPriority {
     } else if (epochDuration == EpochDuration.Monthly) {
       epochDurationInSeconds = 4 weeks;
     }
-    return timePassedSinceStart / epochDurationInSeconds;
+    return uint8(timePassedSinceStart / epochDurationInSeconds);
   }
 }
