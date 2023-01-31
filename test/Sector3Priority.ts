@@ -116,7 +116,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
-  describe("getEpochNumber - EpochDuration.Biweekly", async function() {
+  describe("getEpochIndex - EpochDuration.Biweekly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
@@ -172,7 +172,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
-  describe("getEpochNumber - EpochDuration.Monthly", async function() {
+  describe("getEpochIndex - EpochDuration.Monthly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 

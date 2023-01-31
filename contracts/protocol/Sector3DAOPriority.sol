@@ -39,7 +39,7 @@ contract Sector3DAOPriority is IPriority {
     // TODO
   }
 
-  function claimReward(uint8 epochNumber) public {
+  function claimReward(uint8 epochIndex) public {
     // TODO
   }
 
