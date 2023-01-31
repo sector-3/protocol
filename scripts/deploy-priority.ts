@@ -11,7 +11,7 @@ async function main() {
   const title = "<priority title>";
   const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
   const epochDuration = 0;  // EpochDuration.Weekly
-  const epochBudget = (2.049 * 1e18).toString();  // 2.049
+  const epochBudget = (2.049 * 1e18).toString();  // 2.049 = "2049000000000000000"
   const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDuration, epochBudget);
 
   await sector3DAOPriority.deployed();

@@ -227,4 +227,16 @@ describe("Sector3DAOPriority", function () {
       expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
     });
   });
+
+  describe("addContribution", async function() {
+    it("Contributions array should be empty immediately after deployment", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      const epochIndex = await sector3DAOPriority.getEpochIndex();
+      console.log("epochIndex:", epochIndex);
+      // const contributions = await sector3DAOPriority.contributionsByEpochIndex(epochIndex);
+      // console.log("contributions:", contributions);
+      // TODO
+    });
+  });
 });

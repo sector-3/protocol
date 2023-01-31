@@ -24,7 +24,7 @@ contract Sector3DAOPriority is IPriority {
 
   uint256 public epochBudget;
 
-  mapping (uint8 => Contribution[]) contributionsByEpochIndex;  // 0, 1, 2, ...
+  mapping(uint8 => Contribution[]) public contributionsByEpochIndex;  // 0, 1, 2, ...
 
   constructor(address dao_, string memory title_, address rewardToken_, EpochDuration epochDuration_, uint256 epochBudget_) {
     dao = dao_;
@@ -36,7 +36,12 @@ contract Sector3DAOPriority is IPriority {
   }
 
   function addContribution(string calldata description, Alignment alignment, uint8 hoursSpent) public {
-    // TODO
+    uint8 epochIndex = getEpochIndex();
+    contributionsByEpochIndex[epochIndex].push(Contribution({
+      description: description,
+      alignment: alignment,
+      hoursSpent: hoursSpent
+    }));
   }
 
   function claimReward(uint8 epochIndex) public {
