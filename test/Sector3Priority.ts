@@ -423,4 +423,68 @@ describe("Sector3DAOPriority", function () {
       expect(allocationPercentage).to.equal(50);
     });
   });
+
+  describe("getEpochReward", async function() {
+    it("Should be 2.049 if one contributor", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #1",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #2",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      const epochReward = await sector3DAOPriority.getEpochReward(0);
+      console.log("epochReward:", epochReward);
+      
+      expect(epochReward).to.equal(ethers.utils.parseUnits("2.049"));
+    });
+
+    it("Should be 1.0245 if two contributors", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #1",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: otherAccount.address,
+        description: "Contribution #2",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      const epochReward = await sector3DAOPriority.getEpochReward(0);
+      console.log("epochReward:", epochReward);
+      
+      expect(epochReward).to.equal(ethers.utils.parseUnits("1.0245"));
+    });
+  });
 });

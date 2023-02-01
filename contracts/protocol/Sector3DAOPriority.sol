@@ -58,11 +58,21 @@ contract Sector3DAOPriority is IPriority {
     emit RewardClaimed(epochIndex, msg.sender, epochReward);
   }
 
+  /**
+   * Calculates a contributor's token allocation of the budget for a given epoch.
+   * 
+   * @param epochIndex The index of an epoch that has ended.
+   */
   function getEpochReward(uint16 epochIndex) public view returns (uint256) {
     uint8 allocationPercentage = getAllocationPercentage(epochIndex);
     return epochBudget * allocationPercentage / 100;
   }
 
+  /**
+   * Calculates a contributor's percentage allocation of the budget for a given epoch.
+   * 
+   * @param epochIndex The index of an epoch that has ended.
+   */
   function getAllocationPercentage(uint16 epochIndex) public view returns (uint8) {
     uint16 hoursSpentContributor = 0;
     uint16 hoursSpentAllContributors = 0;
