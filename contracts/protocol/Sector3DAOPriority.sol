@@ -5,6 +5,7 @@ import "./IPriority.sol";
 import "./Enums.sol";
 
 struct Contribution {
+  uint8 epochIndex;
   string description;
   Alignment alignment;
   uint8 hoursSpent;
@@ -24,7 +25,7 @@ contract Sector3DAOPriority is IPriority {
 
   uint256 public epochBudget;
 
-  mapping(uint8 => Contribution[]) public contributionsByEpochIndex;  // 0, 1, 2, ...
+  Contribution[] contributions;
 
   constructor(address dao_, string memory title_, address rewardToken_, EpochDuration epochDuration_, uint256 epochBudget_) {
     dao = dao_;
@@ -37,11 +38,20 @@ contract Sector3DAOPriority is IPriority {
 
   function addContribution(string calldata description, Alignment alignment, uint8 hoursSpent) public {
     uint8 epochIndex = getEpochIndex();
-    contributionsByEpochIndex[epochIndex].push(Contribution({
+    contributions.push(Contribution({
+      epochIndex: epochIndex,
       description: description,
       alignment: alignment,
       hoursSpent: hoursSpent
     }));
+  }
+
+  function getContributionCount() public view returns (uint8) {
+    return uint8(contributions.length);
+  }
+
+  function getContribution(uint8 index) public view returns (Contribution memory) {
+    return contributions[index];
   }
 
   function claimReward(uint8 epochIndex) public {

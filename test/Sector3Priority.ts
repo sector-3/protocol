@@ -2,6 +2,7 @@ import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { ContributionStructOutput } from "../typechain-types/contracts/protocol/Sector3DAOPriority";
 
 describe("Sector3DAOPriority", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -229,14 +230,74 @@ describe("Sector3DAOPriority", function () {
   });
 
   describe("addContribution", async function() {
-    it("Contributions array should be empty immediately after deployment", async function() {
-      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+    it("getContributionCount - should be zero immediately after deployment", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
 
-      const epochIndex = await sector3DAOPriority.getEpochIndex();
-      console.log("epochIndex:", epochIndex);
-      // const contributions = await sector3DAOPriority.contributionsByEpochIndex(epochIndex);
-      // console.log("contributions:", contributions);
-      // TODO
+      expect(await sector3DAOPriority.getContributionCount()).to.equal(0);
+    });
+
+    it("getContributionCount - should be 1 after first addition", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
+
+      const description = "Description (test)";
+      const alignment = 2;  // Alignment.Mostly
+      const hoursSpent = 10;
+      await sector3DAOPriority.addContribution(description, alignment, hoursSpent);
+
+      expect(await sector3DAOPriority.getContributionCount()).to.equal(1);
+    });
+
+    it("getContributionCount - should be 2 after second addition", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
+
+      const description = "Description (test)";
+      const alignment = 2;  // Alignment.Mostly
+      const hoursSpent = 10;
+      await sector3DAOPriority.addContribution(description, alignment, hoursSpent);
+
+      await sector3DAOPriority.addContribution(description, alignment, hoursSpent);
+
+      expect(await sector3DAOPriority.getContributionCount()).to.equal(2);
+    });
+
+    it("addContribution", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
+
+      const description = "Description (test)";
+      const alignment = 2;  // Alignment.Mostly
+      const hoursSpent = 10;
+      await sector3DAOPriority.addContribution(description, alignment, hoursSpent);
+
+      const contribution = await sector3DAOPriority.getContribution(0);
+      console.log("contribution:", contribution)
+
+      expect(contribution.epochIndex).to.equal(0);
+      expect(contribution.description).to.equal("Description (test)");
+      expect(contribution.alignment).to.equal(2);
+      expect(contribution.hoursSpent).to.equal(10);
+    });
+
+    it("addContribution - 2nd epoch", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      const description = "Description (test)";
+      const alignment = 2;  // Alignment.Mostly
+      const hoursSpent = 10;
+      await sector3DAOPriority.addContribution(description, alignment, hoursSpent);
+
+      const contribution = await sector3DAOPriority.getContribution(0);
+      console.log("contribution:", contribution)
+
+      expect(contribution.epochIndex).to.equal(1);
+      expect(contribution.description).to.equal("Description (test)");
+      expect(contribution.alignment).to.equal(2);
+      expect(contribution.hoursSpent).to.equal(10);
     });
   });
 });
