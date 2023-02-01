@@ -5,6 +5,7 @@ import "./Enums.sol";
 
 struct Contribution {
   uint16 epochIndex;
+  address contributor;
   string description;
   Alignment alignment;
   uint8 hoursSpent;
