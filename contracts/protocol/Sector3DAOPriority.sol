@@ -50,6 +50,7 @@ contract Sector3DAOPriority is IPriority {
 
   function addContribution(Contribution memory contribution) public {
     contribution.epochIndex = getEpochIndex();
+    contribution.contributor = msg.sender;
     contributions.push(contribution);
     emit ContributionAdded(contribution);
   }

@@ -11,7 +11,9 @@ describe("Sector3DAOPriority", function () {
 
     // Contracts are deployed using the first signer/account by default
     const [owner, otherAccount] = await ethers.getSigners();
-
+    console.log('owner.address:', owner.address);
+    console.log('otherAccount.address:', otherAccount.address);
+    
     const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
     const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
     const title = "Priority Title";
@@ -286,6 +288,7 @@ describe("Sector3DAOPriority", function () {
       console.log("contribution:", contribution)
 
       expect(contribution.epochIndex).to.equal(0);
+      expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.alignment).to.equal(2);
       expect(contribution.hoursSpent).to.equal(10);
@@ -312,6 +315,7 @@ describe("Sector3DAOPriority", function () {
       console.log("contribution:", contribution)
 
       expect(contribution.epochIndex).to.equal(1);
+      expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.alignment).to.equal(2);
       expect(contribution.hoursSpent).to.equal(10);
@@ -346,6 +350,7 @@ describe("Sector3DAOPriority", function () {
       console.log("contribution1:", contribution1)
 
       expect(contribution1.epochIndex).to.equal(1);
+      expect(contribution1.contributor).to.equal(owner.address);
       expect(contribution1.description).to.equal("Description (test)");
       expect(contribution1.alignment).to.equal(2);
       expect(contribution1.hoursSpent).to.equal(10);
@@ -354,6 +359,7 @@ describe("Sector3DAOPriority", function () {
       console.log("contribution2:", contribution2)
 
       expect(contribution2.epochIndex).to.equal(1);
+      expect(contribution2.contributor).to.equal(owner.address);
       expect(contribution2.description).to.equal("Description 2 (test)");
       expect(contribution2.alignment).to.equal(3);
       expect(contribution2.hoursSpent).to.equal(12);
@@ -403,7 +409,7 @@ describe("Sector3DAOPriority", function () {
         hoursSpent: 5
       });
 
-      await sector3DAOPriority.addContribution({
+      await sector3DAOPriority.connect(otherAccount).addContribution({
         epochIndex: 2_049,
         contributor: otherAccount.address,
         description: "Contribution #2",
@@ -467,7 +473,7 @@ describe("Sector3DAOPriority", function () {
         hoursSpent: 5
       });
 
-      await sector3DAOPriority.addContribution({
+      await sector3DAOPriority.connect(otherAccount).addContribution({
         epochIndex: 2_049,
         contributor: otherAccount.address,
         description: "Contribution #2",
