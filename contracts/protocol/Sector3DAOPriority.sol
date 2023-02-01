@@ -60,12 +60,12 @@ contract Sector3DAOPriority is IPriority {
   }
 
   function getEpochReward(uint16 epochIndex) public view returns (uint256) {
-    uint256 allocationFraction = getAllocationFraction(epochIndex);
-    uint256 allocationAmount = epochBudget * allocationFraction;
+    uint256 allocationPercentage = getAllocationPercentage(epochIndex);
+    uint256 allocationAmount = epochBudget * allocationPercentage / 100;
     return allocationAmount;
   }
 
-  function getAllocationFraction(uint16 epochIndex) public view returns (uint256) {
+  function getAllocationPercentage(uint16 epochIndex) public view returns (uint256) {
     uint16 hoursSpentContributor = 0;
     uint16 hoursSpentAllContributors = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
@@ -79,7 +79,7 @@ contract Sector3DAOPriority is IPriority {
     }
     console.log("hoursSpentContributor:", hoursSpentContributor);
     console.log("hoursSpentAllContributors:", hoursSpentAllContributors);
-    return hoursSpentContributor / hoursSpentAllContributors;
+    return hoursSpentContributor * 100 / hoursSpentAllContributors;
   }
 
   /**
