@@ -72,7 +72,7 @@ contract Sector3DAOPriority is IPriority {
     if (epochIndex >= getEpochIndex()) {
       revert EpochNotYetEnded();
     }
-    uint256 epochReward = getEpochReward(epochIndex);
+    uint256 epochReward = getEpochReward(epochIndex, msg.sender);
     if (epochReward == 0) {
       revert NoRewardForEpoch();
     }
@@ -85,8 +85,8 @@ contract Sector3DAOPriority is IPriority {
    * 
    * @param epochIndex The index of an epoch.
    */
-  function getEpochReward(uint16 epochIndex) public view returns (uint256) {
-    uint8 allocationPercentage = getAllocationPercentage(epochIndex);
+  function getEpochReward(uint16 epochIndex, address contributor) public view returns (uint256) {
+    uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
     return epochBudget * allocationPercentage / 100;
   }
 
@@ -95,18 +95,22 @@ contract Sector3DAOPriority is IPriority {
    * 
    * @param epochIndex The index of an epoch.
    */
-  function getAllocationPercentage(uint16 epochIndex) public view returns (uint8) {
+  function getAllocationPercentage(uint16 epochIndex, address contributor) public view returns (uint8) {
     uint16 hoursSpentContributor = 0;
     uint16 hoursSpentAllContributors = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
       Contribution memory contribution = contributions[i];
       if (contribution.epochIndex == epochIndex) {
-        if (contribution.contributor == msg.sender) {
+        if (contribution.contributor == contributor) {
           hoursSpentContributor += contribution.hoursSpent;
         }
         hoursSpentAllContributors += contribution.hoursSpent;
       }
     }
-    return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
+    if (hoursSpentAllContributors == 0) {
+      return 0;
+    } else {
+      return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
+    }
   }
 }

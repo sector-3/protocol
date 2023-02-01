@@ -65,6 +65,7 @@ describe("Sector3DAOPriority", function () {
     return { sector3DAOPriority, owner, otherAccount };
   }
 
+  
   describe("Deployment", function() {
     it("Should set the right DAO address", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
@@ -97,6 +98,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
+  
   describe("getEpochIndex - EpochDuration.Weekly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
@@ -117,6 +119,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
+  
   describe("getEpochIndex - EpochDuration.Biweekly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
@@ -173,6 +176,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
+  
   describe("getEpochIndex - EpochDuration.Monthly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
@@ -229,6 +233,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
+  
   describe("addContribution", async function() {
     it("getContributionCount - should be zero immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
@@ -366,6 +371,7 @@ describe("Sector3DAOPriority", function () {
     });
   });
 
+  
   describe("getAllocationPercentage", async function() {
     it("Should be 100% if one contributor", async function() {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
@@ -392,7 +398,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       console.log("Time 1 week later:", await time.latest());
 
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0);
+      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0, owner.address);
       console.log("allocationPercentage:", allocationPercentage);
       
       expect(allocationPercentage).to.equal(100);
@@ -423,13 +429,14 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       console.log("Time 1 week later:", await time.latest());
 
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0);
+      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0, owner.address);
       console.log("allocationPercentage:", allocationPercentage);
       
       expect(allocationPercentage).to.equal(50);
     });
   });
 
+  
   describe("getEpochReward", async function() {
     it("Should be 2.049 if one contributor", async function() {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
@@ -456,7 +463,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       console.log("Time 1 week later:", await time.latest());
 
-      const epochReward = await sector3DAOPriority.getEpochReward(0);
+      const epochReward = await sector3DAOPriority.getEpochReward(0, owner.address);
       console.log("epochReward:", epochReward);
       
       expect(epochReward).to.equal(ethers.utils.parseUnits("2.049"));
@@ -487,10 +494,45 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       console.log("Time 1 week later:", await time.latest());
 
-      const epochReward = await sector3DAOPriority.getEpochReward(0);
+      const epochReward = await sector3DAOPriority.getEpochReward(0, owner.address);
       console.log("epochReward:", epochReward);
       
       expect(epochReward).to.equal(ethers.utils.parseUnits("1.0245"));
+    });
+  });
+
+
+  describe("claimReward", async function() {
+    it("Should revert if epoch not yet ended", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #1",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "EpochNotYetEnded"
+      );
+    });
+
+    it("Should revert if the account made no contributions during the epoch", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "NoRewardForEpoch"
+      );
     });
   });
 });
