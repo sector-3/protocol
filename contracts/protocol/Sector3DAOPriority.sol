@@ -32,7 +32,7 @@ contract Sector3DAOPriority is IPriority {
     epochBudget = epochBudget_;
   }
 
-    /**
+  /**
    * Calculates the current epoch index based on the `Priority`'s start time and epoch duration.
    */
   function getEpochIndex() public view returns (uint16) {
