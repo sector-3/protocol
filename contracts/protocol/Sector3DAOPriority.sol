@@ -3,13 +3,7 @@ pragma solidity ^0.8.17;
 
 import "./IPriority.sol";
 import "./Enums.sol";
-
-struct Contribution {
-  uint8 epochIndex;
-  string description;
-  Alignment alignment;
-  uint8 hoursSpent;
-}
+import "./Structs.sol";
 
 contract Sector3DAOPriority is IPriority {
 
@@ -27,6 +21,8 @@ contract Sector3DAOPriority is IPriority {
 
   Contribution[] contributions;
 
+  event ContributionAdded(Contribution contribution);
+
   constructor(address dao_, string memory title_, address rewardToken_, EpochDuration epochDuration_, uint256 epochBudget_) {
     dao = dao_;
     title = title_;
@@ -36,32 +32,28 @@ contract Sector3DAOPriority is IPriority {
     epochBudget = epochBudget_;
   }
 
-  function addContribution(string calldata description, Alignment alignment, uint8 hoursSpent) public {
-    uint8 epochIndex = getEpochIndex();
-    contributions.push(Contribution({
-      epochIndex: epochIndex,
-      description: description,
-      alignment: alignment,
-      hoursSpent: hoursSpent
-    }));
+  function addContribution(Contribution memory contribution) public {
+    contribution.epochIndex = getEpochIndex();
+    contributions.push(contribution);
+    emit ContributionAdded(contribution);
   }
 
-  function getContributionCount() public view returns (uint8) {
-    return uint8(contributions.length);
+  function getContributionCount() public view returns (uint16) {
+    return uint16(contributions.length);
   }
 
-  function getContribution(uint8 index) public view returns (Contribution memory) {
+  function getContribution(uint16 index) public view returns (Contribution memory) {
     return contributions[index];
   }
 
-  function claimReward(uint8 epochIndex) public {
+  function claimReward(uint16 epochIndex) public {
     // TODO
   }
 
   /**
    * Calculates the current epoch index based on the priority's start time and epoch duration.
    */
-  function getEpochIndex() public view returns (uint8) {
+  function getEpochIndex() public view returns (uint16) {
     uint256 timePassedSinceStart = block.timestamp - startTime;
     uint256 epochDurationInSeconds = 0;
     if (epochDuration == EpochDuration.Weekly) {
@@ -71,6 +63,6 @@ contract Sector3DAOPriority is IPriority {
     } else if (epochDuration == EpochDuration.Monthly) {
       epochDurationInSeconds = 4 weeks;
     }
-    return uint8(timePassedSinceStart / epochDurationInSeconds);
+    return uint16(timePassedSinceStart / epochDurationInSeconds);
   }
 }

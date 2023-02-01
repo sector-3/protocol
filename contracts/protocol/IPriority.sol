@@ -2,16 +2,17 @@
 pragma solidity ^0.8.17;
 
 import "./Enums.sol";
+import "./Structs.sol";
 
 interface IPriority {
 
   /**
    * Add a contribution for the current epoch.
    */
-  function addContribution(string calldata description, Alignment alignment, uint8 hoursSpent) external;
+  function addContribution(Contribution memory contribution) external;
 
   /**
    * Claim reward for contributions made in a past epoch.
    */
-  function claimReward(uint8 epochNumber) external;
+  function claimReward(uint16 epochNumber) external;
 }
