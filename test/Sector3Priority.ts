@@ -335,13 +335,21 @@ describe("Sector3DAOPriority", function () {
         hoursSpent: 12
       });
 
-      const contribution = await sector3DAOPriority.getContribution(1);
-      console.log("contribution:", contribution)
+      const contribution1 = await sector3DAOPriority.getContribution(0);
+      console.log("contribution1:", contribution1)
 
-      expect(contribution.epochIndex).to.equal(1);
-      expect(contribution.description).to.equal("Description 2 (test)");
-      expect(contribution.alignment).to.equal(3);
-      expect(contribution.hoursSpent).to.equal(12);
+      expect(contribution1.epochIndex).to.equal(1);
+      expect(contribution1.description).to.equal("Description (test)");
+      expect(contribution1.alignment).to.equal(2);
+      expect(contribution1.hoursSpent).to.equal(10);
+
+      const contribution2 = await sector3DAOPriority.getContribution(1);
+      console.log("contribution2:", contribution2)
+
+      expect(contribution2.epochIndex).to.equal(1);
+      expect(contribution2.description).to.equal("Description 2 (test)");
+      expect(contribution2.alignment).to.equal(3);
+      expect(contribution2.hoursSpent).to.equal(12);
     });
   });
 });
