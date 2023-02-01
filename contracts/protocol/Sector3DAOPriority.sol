@@ -32,6 +32,22 @@ contract Sector3DAOPriority is IPriority {
     epochBudget = epochBudget_;
   }
 
+    /**
+   * Calculates the current epoch index based on the `Priority`'s start time and epoch duration.
+   */
+  function getEpochIndex() public view returns (uint16) {
+    uint256 timePassedSinceStart = block.timestamp - startTime;
+    uint256 epochDurationInSeconds = 0;
+    if (epochDuration == EpochDuration.Weekly) {
+      epochDurationInSeconds = 1 weeks;
+    } else if (epochDuration == EpochDuration.Biweekly) {
+      epochDurationInSeconds = 2 weeks;
+    } else if (epochDuration == EpochDuration.Monthly) {
+      epochDurationInSeconds = 4 weeks;
+    }
+    return uint16(timePassedSinceStart / epochDurationInSeconds);
+  }
+
   function addContribution(Contribution memory contribution) public {
     contribution.epochIndex = getEpochIndex();
     contributions.push(contribution);
@@ -46,6 +62,11 @@ contract Sector3DAOPriority is IPriority {
     return contributions[index];
   }
 
+  /**
+   * Claims a contributor's reward for contributions made in a given epoch.
+   * 
+   * @param epochIndex The index of an epoch that has ended.
+   */
   function claimReward(uint16 epochIndex) public {
     if (epochIndex >= getEpochIndex()) {
       revert EpochNotYetEnded();
@@ -86,21 +107,5 @@ contract Sector3DAOPriority is IPriority {
       }
     }
     return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
-  }
-
-  /**
-   * Calculates the current epoch index based on the priority's start time and epoch duration.
-   */
-  function getEpochIndex() public view returns (uint16) {
-    uint256 timePassedSinceStart = block.timestamp - startTime;
-    uint256 epochDurationInSeconds = 0;
-    if (epochDuration == EpochDuration.Weekly) {
-      epochDurationInSeconds = 1 weeks;
-    } else if (epochDuration == EpochDuration.Biweekly) {
-      epochDurationInSeconds = 2 weeks;
-    } else if (epochDuration == EpochDuration.Monthly) {
-      epochDurationInSeconds = 4 weeks;
-    }
-    return uint16(timePassedSinceStart / epochDurationInSeconds);
   }
 }
