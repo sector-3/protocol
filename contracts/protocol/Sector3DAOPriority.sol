@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./IPriority.sol";
 import "./Enums.sol";
 import "./Structs.sol";
-import "hardhat/console.sol";
 
 contract Sector3DAOPriority is IPriority {
   using SafeERC20 for IERC20;
@@ -60,12 +59,11 @@ contract Sector3DAOPriority is IPriority {
   }
 
   function getEpochReward(uint16 epochIndex) public view returns (uint256) {
-    uint256 allocationPercentage = getAllocationPercentage(epochIndex);
-    uint256 allocationAmount = epochBudget * allocationPercentage / 100;
-    return allocationAmount;
+    uint8 allocationPercentage = getAllocationPercentage(epochIndex);
+    return epochBudget * allocationPercentage / 100;
   }
 
-  function getAllocationPercentage(uint16 epochIndex) public view returns (uint256) {
+  function getAllocationPercentage(uint16 epochIndex) public view returns (uint8) {
     uint16 hoursSpentContributor = 0;
     uint16 hoursSpentAllContributors = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
@@ -77,9 +75,7 @@ contract Sector3DAOPriority is IPriority {
         hoursSpentAllContributors += contribution.hoursSpent;
       }
     }
-    console.log("hoursSpentContributor:", hoursSpentContributor);
-    console.log("hoursSpentAllContributors:", hoursSpentAllContributors);
-    return hoursSpentContributor * 100 / hoursSpentAllContributors;
+    return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
   }
 
   /**
