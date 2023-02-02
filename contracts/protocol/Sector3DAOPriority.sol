@@ -13,7 +13,7 @@ contract Sector3DAOPriority is IPriority {
   string public title;
   IERC20 public rewardToken;
   uint256 public startTime;
-  EpochDuration public epochDuration;
+  uint16 public epochDuration;
   uint256 public epochBudget;
   Contribution[] contributions;
 
@@ -23,12 +23,12 @@ contract Sector3DAOPriority is IPriority {
   error EpochNotYetEnded();
   error NoRewardForEpoch();
 
-  constructor(address dao_, string memory title_, address rewardToken_, EpochDuration epochDuration_, uint256 epochBudget_) {
+  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_) {
     dao = dao_;
     title = title_;
     rewardToken = IERC20(rewardToken_);
     startTime = block.timestamp;
-    epochDuration = epochDuration_;
+    epochDuration = epochDurationInDays;
     epochBudget = epochBudget_;
   }
 
@@ -37,14 +37,7 @@ contract Sector3DAOPriority is IPriority {
    */
   function getEpochIndex() public view returns (uint16) {
     uint256 timePassedSinceStart = block.timestamp - startTime;
-    uint256 epochDurationInSeconds = 0;
-    if (epochDuration == EpochDuration.Weekly) {
-      epochDurationInSeconds = 1 weeks;
-    } else if (epochDuration == EpochDuration.Biweekly) {
-      epochDurationInSeconds = 2 weeks;
-    } else if (epochDuration == EpochDuration.Monthly) {
-      epochDurationInSeconds = 4 weeks;
-    }
+    uint256 epochDurationInSeconds = epochDuration * 1 days;
     return uint16(timePassedSinceStart / epochDurationInSeconds);
   }
 
