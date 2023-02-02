@@ -22,6 +22,6 @@ jobs:
         cache: 'npm'
         cache-dependency-path: package-lock.json
     - run: npm install
-
+    - run: cp .env.sample .env
     - run: npx hardhat clean
     - run: REPORT_GAS=true npx hardhat test
