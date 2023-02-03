@@ -19,9 +19,9 @@ describe("Sector3DAOPriority", function () {
     const title = "Priority Title";
     const SECTOR3 = await ethers.getContractFactory("SECTOR3");
     const rewardToken = await SECTOR3.deploy();
-    const epochDuration = 0;  // EpochDuration.Weekly
+    const epochDurationInDays = 7;  // Weekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
@@ -40,9 +40,9 @@ describe("Sector3DAOPriority", function () {
     const title = "Priority Title";
     const SECTOR3 = await ethers.getContractFactory("SECTOR3");
     const rewardToken = await SECTOR3.deploy();
-    const epochDuration = 1;  // EpochDuration.Biweekly
+    const epochDurationInDays = 14;  // Biweekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
@@ -61,9 +61,9 @@ describe("Sector3DAOPriority", function () {
     const title = "Priority Title";
     const SECTOR3 = await ethers.getContractFactory("SECTOR3");
     const rewardToken = await SECTOR3.deploy();
-    const epochDuration = 2;  // EpochDuration.Monthly
+    const epochDurationInDays = 28;  // Monthly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
@@ -94,10 +94,22 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(owner.address)).to.equal(ethers.utils.parseUnits("2049"));
     });
 
-    it("Should set the right epoch duration", async function() {
+    it("Should set the right epoch duration - 7 days", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
 
-      expect(await sector3DAOPriority.epochDuration()).to.equal(0);
+      expect(await sector3DAOPriority.epochDuration()).to.equal(7);
+    });
+
+    it("Should set the right epoch duration - 14 days", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
+
+      expect(await sector3DAOPriority.epochDuration()).to.equal(14);
+    });
+
+    it("Should set the right epoch duration - 28 days", async function() {
+      const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
+
+      expect(await sector3DAOPriority.epochDuration()).to.equal(28);
     });
 
     it("Should set the right epoch budget", async function() {

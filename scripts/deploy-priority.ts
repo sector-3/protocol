@@ -10,9 +10,9 @@ async function main() {
   const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
   const title = "<priority title>";
   const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
-  const epochDuration = 0;  // EpochDuration.Weekly
+  const epochDurationInDays = 7;  // Weekly
   const epochBudget = (2.049 * 1e18).toString();  // 2.049 = "2049000000000000000"
-  const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDuration, epochBudget);
+  const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDurationInDays, epochBudget);
 
   await sector3DAOPriority.deployed();
 
