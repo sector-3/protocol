@@ -17,12 +17,13 @@ describe("Sector3DAOPriority", function () {
     const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
     const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
     const title = "Priority Title";
-    const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
+    const SECTOR3 = await ethers.getContractFactory("SECTOR3");
+    const rewardToken = await SECTOR3.deploy();
     const epochDuration = 0;  // EpochDuration.Weekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
 
-    return { sector3DAOPriority, owner, otherAccount };
+    return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
 
   // We define a fixture to reuse the same setup in every test.
@@ -37,12 +38,13 @@ describe("Sector3DAOPriority", function () {
     const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
     const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
     const title = "Priority Title";
-    const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
+    const SECTOR3 = await ethers.getContractFactory("SECTOR3");
+    const rewardToken = await SECTOR3.deploy();
     const epochDuration = 1;  // EpochDuration.Biweekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
 
-    return { sector3DAOPriority, owner, otherAccount };
+    return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
 
   // We define a fixture to reuse the same setup in every test.
@@ -57,12 +59,13 @@ describe("Sector3DAOPriority", function () {
     const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
     const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
     const title = "Priority Title";
-    const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
+    const SECTOR3 = await ethers.getContractFactory("SECTOR3");
+    const rewardToken = await SECTOR3.deploy();
     const epochDuration = 2;  // EpochDuration.Monthly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDuration, epochBudget);
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDuration, epochBudget);
 
-    return { sector3DAOPriority, owner, otherAccount };
+    return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
 
   
@@ -80,9 +83,15 @@ describe("Sector3DAOPriority", function () {
     });
 
     it("Should set the right reward token address", async function() {
-      const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
+      const { sector3DAOPriority, rewardToken } = await loadFixture(deployWeeklyFixture);
 
-      expect(await sector3DAOPriority.rewardToken()).to.equal("0x942d6e75465C3c248Eb8775472c853d2b56139fE");
+      expect(await sector3DAOPriority.rewardToken()).to.equal(rewardToken.address);
+    });
+
+    it("Deployer account should have the right reward token balance", async function() {
+      const { owner, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      expect(await rewardToken.balanceOf(owner.address)).to.equal(ethers.utils.parseUnits("2049"));
     });
 
     it("Should set the right epoch duration", async function() {
@@ -533,6 +542,72 @@ describe("Sector3DAOPriority", function () {
         sector3DAOPriority,
         "NoRewardForEpoch"
       );
+    });
+
+    it("Claim 100%", async function() {
+      const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #1",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      // Transfer funding to the contract
+      rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward
+      await sector3DAOPriority.claimReward(0);
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("0"));
+    });
+
+    it("Claim 50%", async function() {
+      const { sector3DAOPriority, owner, otherAccount, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution({
+        epochIndex: 2_049,
+        contributor: owner.address,
+        description: "Contribution #1",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      await sector3DAOPriority.connect(otherAccount).addContribution({
+        epochIndex: 2_049,
+        contributor: otherAccount.address,
+        description: "Contribution #2",
+        alignment: 2,  // Alignment.Mostly
+        hoursSpent: 5
+      });
+
+      // Increase the time by 1 week
+      console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      console.log("Time 1 week later:", await time.latest());
+
+      // Transfer funding to the contract
+      rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward (owner account)
+      await sector3DAOPriority.claimReward(0);
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
+
+      // Claim reward (other account)
+      expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(0);
+      await sector3DAOPriority.connect(otherAccount).claimReward(0);
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(0);
+      expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(ethers.utils.parseUnits("1.0245"));
     });
   });
 });
