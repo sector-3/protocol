@@ -23,7 +23,7 @@ describe("Sector3DAO", function () {
     it("Should set the right version", async function () {
       const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
 
-      expect(await sector3DAO.version()).to.equal(1);
+      expect(await sector3DAO.version()).to.equal(2);
     });
 
     it("Should set the right owner", async function () {
