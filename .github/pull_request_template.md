@@ -12,4 +12,4 @@ closes #<ID>
 
 <!--- Please add this pull request as a DAO contribution on Sector#3:  https://goerli.sector3.xyz/daos -->
 
-- [ ] Added contribution at `https://goerli.sector3.xyz/daos/<address>`
+- [ ] Added contribution at https://goerli.sector3.xyz/daos/0xcc59cd49993a0bdbd8308867180Cf0A0d258567a
