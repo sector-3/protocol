@@ -269,7 +269,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
       console.log("tx:", tx);
@@ -284,7 +284,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
 
@@ -292,7 +292,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
 
@@ -306,7 +306,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
 
@@ -316,7 +316,7 @@ describe("Sector3DAOPriority", function () {
       expect(contribution.epochIndex).to.equal(0);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
-      expect(contribution.alignment).to.equal(2);
+      expect(contribution.alignment).to.equal(3);
       expect(contribution.hoursSpent).to.equal(10);
     });
 
@@ -333,7 +333,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
 
@@ -343,7 +343,7 @@ describe("Sector3DAOPriority", function () {
       expect(contribution.epochIndex).to.equal(1);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
-      expect(contribution.alignment).to.equal(2);
+      expect(contribution.alignment).to.equal(3);
       expect(contribution.hoursSpent).to.equal(10);
     });
 
@@ -360,7 +360,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 10
       });
 
@@ -368,7 +368,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description 2 (test)",
-        alignment: 3,  // Alignment.Perfectly
+        alignment: 4,  // Alignment.Perfectly
         hoursSpent: 12
       });
 
@@ -378,7 +378,7 @@ describe("Sector3DAOPriority", function () {
       expect(contribution1.epochIndex).to.equal(1);
       expect(contribution1.contributor).to.equal(owner.address);
       expect(contribution1.description).to.equal("Description (test)");
-      expect(contribution1.alignment).to.equal(2);
+      expect(contribution1.alignment).to.equal(3);
       expect(contribution1.hoursSpent).to.equal(10);
 
       const contribution2 = await sector3DAOPriority.getContribution(1);
@@ -387,7 +387,7 @@ describe("Sector3DAOPriority", function () {
       expect(contribution2.epochIndex).to.equal(1);
       expect(contribution2.contributor).to.equal(owner.address);
       expect(contribution2.description).to.equal("Description 2 (test)");
-      expect(contribution2.alignment).to.equal(3);
+      expect(contribution2.alignment).to.equal(4);
       expect(contribution2.hoursSpent).to.equal(12);
     });
   });
@@ -401,7 +401,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -409,7 +409,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #2",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -432,7 +432,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -440,7 +440,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: otherAccount.address,
         description: "Contribution #2",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -466,7 +466,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -474,7 +474,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #2",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -497,7 +497,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -505,7 +505,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: otherAccount.address,
         description: "Contribution #2",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -531,7 +531,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -563,7 +563,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -589,7 +589,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Contribution #1",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
@@ -597,7 +597,7 @@ describe("Sector3DAOPriority", function () {
         epochIndex: 2_049,
         contributor: otherAccount.address,
         description: "Contribution #2",
-        alignment: 2,  // Alignment.Mostly
+        alignment: 3,  // Alignment.Mostly
         hoursSpent: 5
       });
 
