@@ -30,7 +30,7 @@ contract Sector3DAO {
   string public purpose;
 
   /**
-   * The priorities added for this DAO.
+   * The priorities added by this DAO.
    */
   Sector3DAOPriority[] public priorities;
 
@@ -57,7 +57,12 @@ contract Sector3DAO {
   }
 
   function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget) public {
+    require(msg.sender == owner, "You aren't the owner");
     Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget);
     priorities.push(priority);
+  }
+
+  function getPriorityCount() public view returns (uint16) {
+    return uint16(priorities.length);
   }
 }
