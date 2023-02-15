@@ -10,4 +10,4 @@
 
 <!--- Please add this pull request as a DAO contribution on Sector#3:  https://goerli.sector3.xyz/daos -->
 
-- [ ] Added contribution at https://goerli.sector3.xyz/daos/0xcc59cd49993a0bdbd8308867180Cf0A0d258567a
+- [ ] Added contribution at https://goerli.sector3.xyz/daos/0x66E6Aed398d2BD699214c4580EC6A5D65C223176
