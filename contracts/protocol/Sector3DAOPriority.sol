@@ -106,4 +106,48 @@ contract Sector3DAOPriority is IPriority {
       return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
     }
   }
+
+
+  function getEpochContributions(uint256 epoch) public view returns (address[] memory contributors, uint256[] memory amounts) {
+    uint256 length = contributions.length;
+    uint256 totalAmount = 0;
+    for (uint256 i = 0; i < length; i++) {
+        uint256 contributionEpoch = contributions[i].epoch;
+        if (contributionEpoch == epoch) {
+            totalAmount += contributions[i].amount;
+        }
+    }
+    contributors = new address[](length);
+    amounts = new uint256[](length);
+    uint256 j = 0;
+    for (uint256 i = 0; i < length; i++) {
+        uint256 contributionEpoch = contributions[i].epoch;
+        if (contributionEpoch == epoch) {
+            contributors[j] = contributions[i].contributor;
+            amounts[j] = contributions[i].amount;
+            j++;
+        }
+    }
+    contributors = _sliceContributors(contributors, 0, j);
+    amounts = _sliceAmounts(amounts, 0, j);
+    return (contributors, amounts);
+}
+
+function _sliceContributors(address[] memory array, uint256 start, uint256 end) internal pure returns (address[] memory) {
+    address[] memory sliced = new address[](end - start);
+    for (uint256 i = start; i < end; i++) {
+        sliced[i - start] = array[i];
+    }
+    return sliced;
+}
+
+function _sliceAmounts(uint256[] memory array, uint256 start, uint256 end) internal pure returns (uint256[] memory) {
+    uint256[] memory sliced = new uint256[](end - start);
+    for (uint256 i = start; i < end; i++) {
+        sliced[i - start] = array[i];
+    }
+    return sliced;
+}
+  
+  
 }
