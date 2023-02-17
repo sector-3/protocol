@@ -22,6 +22,7 @@ contract Sector3DAOPriority is IPriority {
 
   error EpochNotYetEnded();
   error NoRewardForEpoch();
+  error PreviousEpochNotFunded();
 
   constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_) {
     dao = dao_;
@@ -74,16 +75,6 @@ contract Sector3DAOPriority is IPriority {
   }
 
   /**
-   * Calculates a contributor's token allocation of the budget for a given epoch.
-   * 
-   * @param epochIndex The index of an epoch.
-   */
-  function getEpochReward(uint16 epochIndex, address contributor) public view returns (uint256) {
-    uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
-    return epochBudget * allocationPercentage / 100;
-  }
-
-  /**
    * Calculates a contributor's percentage allocation of the budget for a given epoch.
    * 
    * @param epochIndex The index of an epoch.
@@ -106,4 +97,44 @@ contract Sector3DAOPriority is IPriority {
       return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
     }
   }
+
+  /**
+ * Calculates the total token allocation for an epoch.
+ * 
+ * @param epochIndex The index of an epoch.
+ */
+function getEpochAllocation(uint16 epochIndex) public view returns (uint256) {
+  if (epochIndex == 0) {
+    return 0;
+  }
+
+  uint256 totalAllocation = 0;
+
+  // Iterate over all contributions in the previous epoch
+  for (uint16 i = 0; i < contributions.length; i++) {
+    Contribution memory contribution = contributions[i];
+    if (contribution.epochIndex == epochIndex - 1) {
+      uint256 contributorAllocation = epochBudget * getAllocationPercentage(epochIndex - 1, contribution.contributor) / 100;
+      totalAllocation += contributorAllocation;
+    }
+  }
+
+  return totalAllocation;
+}
+
+/**
+ * Calculates a contributor's token allocation of the budget for a given epoch.
+ * 
+ * @param epochIndex The index of an epoch.
+ */
+function getEpochReward(uint16 epochIndex, address contributor) public view returns (uint256) {
+  uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
+  uint256 epochAllocation = epochBudget * allocationPercentage / 100;
+
+  // Subtract the total allocation for the previous epoch
+  uint256 previousEpochAllocation = getEpochAllocation(epochIndex);
+  uint256 remainingAllocation = epochAllocation - previousEpochAllocation;
+  return remainingAllocation;
+}
+
 }
