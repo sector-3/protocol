@@ -108,46 +108,23 @@ contract Sector3DAOPriority is IPriority {
   }
 
 
-  function getEpochContributions(uint256 epoch) public view returns (address[] memory contributors, uint256[] memory amounts) {
-    uint256 length = contributions.length;
-    uint256 totalAmount = 0;
-    for (uint256 i = 0; i < length; i++) {
-        uint16 contributionEpoch = contributions[i].epoch;
-        if (contributionEpoch == epoch) {
-            totalAmount += contributions[i].amount;
-        }
+  function getEpochContributions(uint16 epochIndex) public view returns (Contribution[] memory) {
+    uint16 count = 0;
+    for (uint16 i = 0; i < contributions.length; i++) {
+      if (contributions[i].epochIndex == epochIndex) {
+        count++;
+      }
     }
-    contributors = new address[](length);
-    amounts = new uint256[](length);
-    uint256 j = 0;
-    for (uint256 i = 0; i < length; i++) {
-        uint16 contributionEpoch = contributions[i].epoch;
-        if (contributionEpoch == epoch) {
-            contributors[j] = contributions[i].contributor;
-            amounts[j] = contributions[i].amount;
-            j++;
-        }
+    Contribution[] memory epochContributions = new Contribution[](count);
+    count = 0;
+    for (uint16 i = 0; i < contributions.length; i++) {
+      if (contributions[i].epochIndex == epochIndex) {
+        epochContributions[count] = contributions[i];
+        count++;
+      }
     }
-    contributors = _sliceContributors(contributors, 0, j);
-    amounts = _sliceAmounts(amounts, 0, j);
-    return (contributors, amounts);
-}
-
-function _sliceContributors(address[] memory array, uint256 start, uint256 end) internal pure returns (address[] memory) {
-    address[] memory sliced = new address[](end - start);
-    for (uint256 i = start; i < end; i++) {
-        sliced[i - start] = array[i];
-    }
-    return sliced;
-}
-
-function _sliceAmounts(uint256[] memory array, uint256 start, uint256 end) internal pure returns (uint256[] memory) {
-    uint256[] memory sliced = new uint256[](end - start);
-    for (uint256 i = start; i < end; i++) {
-        sliced[i - start] = array[i];
-    }
-    return sliced;
-}
+    return epochContributions;
+  }
   
   
 }
