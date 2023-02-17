@@ -112,7 +112,7 @@ contract Sector3DAOPriority is IPriority {
     uint256 length = contributions.length;
     uint256 totalAmount = 0;
     for (uint256 i = 0; i < length; i++) {
-        uint256 contributionEpoch = contributions[i].epoch;
+        uint16 contributionEpoch = contributions[i].epoch;
         if (contributionEpoch == epoch) {
             totalAmount += contributions[i].amount;
         }
@@ -121,7 +121,7 @@ contract Sector3DAOPriority is IPriority {
     amounts = new uint256[](length);
     uint256 j = 0;
     for (uint256 i = 0; i < length; i++) {
-        uint256 contributionEpoch = contributions[i].epoch;
+        uint16 contributionEpoch = contributions[i].epoch;
         if (contributionEpoch == epoch) {
             contributors[j] = contributions[i].contributor;
             amounts[j] = contributions[i].amount;
