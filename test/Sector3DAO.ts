@@ -14,7 +14,7 @@ describe("Sector3DAO", function () {
     const [owner, otherAccount] = await ethers.getSigners();
 
     const Sector3DAO = await ethers.getContractFactory("Sector3DAO");
-    const sector3DAO = await Sector3DAO.deploy("Name Value", "Purpose Value");
+    const sector3DAO = await Sector3DAO.deploy("Name Value", "Purpose Value", "0x942d6e75465C3c248Eb8775472c853d2b56139fE");
 
     return { sector3DAO, owner, otherAccount };
   }
@@ -23,7 +23,7 @@ describe("Sector3DAO", function () {
     it("Should set the right version", async function () {
       const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
 
-      expect(await sector3DAO.version()).to.equal(2);
+      expect(await sector3DAO.version()).to.equal(3);
     });
 
     it("Should set the right owner", async function () {
