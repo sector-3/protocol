@@ -86,6 +86,7 @@ contract Sector3DAO {
   }
 
   function removePriority(Sector3DAOPriority priority) public {
+    require(msg.sender == owner, "You aren't the owner");
     // TODO
   }
 }
