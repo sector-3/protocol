@@ -12,7 +12,7 @@ contract Sector3DAO {
   /**
    * The smart contract version.
    */
-  uint8 public constant version = 3;
+  uint8 public constant version = 0;
 
   /**
    * The smart contract owner.
