@@ -87,6 +87,15 @@ contract Sector3DAO {
 
   function removePriority(Sector3DAOPriority priority) public {
     require(msg.sender == owner, "You aren't the owner");
-    // TODO
+    Sector3DAOPriority[] memory prioritiesAfterRemoval = new Sector3DAOPriority[](priorities.length - 1);
+    uint16 prioritiesIndex = 0;
+    for (uint16 i = 0; i < prioritiesAfterRemoval.length; i++) {
+      if (priority == priorities[prioritiesIndex]) {
+        prioritiesIndex++;
+      }
+      prioritiesAfterRemoval[i] = priorities[prioritiesIndex];
+      prioritiesIndex++;
+    }
+    priorities = prioritiesAfterRemoval;
   }
 }
