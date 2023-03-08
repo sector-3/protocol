@@ -23,7 +23,7 @@ describe("Sector3DAO", function () {
     it("Should set the right version", async function () {
       const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
 
-      expect(await sector3DAO.version()).to.equal(3);
+      expect(await sector3DAO.version()).to.equal(0);
     });
 
     it("Should set the right owner", async function () {
@@ -43,5 +43,82 @@ describe("Sector3DAO", function () {
 
       expect(await sector3DAO.purpose()).to.equal("Purpose Value");
     });
+
+    it("Should set the right DAO token", async function () {
+      const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
+
+      expect(await sector3DAO.token()).to.equal("0x942d6e75465C3c248Eb8775472c853d2b56139fE");
+    });
   });
+
+  describe("Priorities", function () {
+    it("deploy priority", async function () {
+      const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
+
+      let priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(0);
+
+      await sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString());
+      priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(1);
+
+      await sector3DAO.deployPriority('Priority #2', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 14, (4.098 * 1e18).toString());
+      priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(2);
+    })
+
+    it("remove priority - from array of 1", async function () {
+      const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
+
+      await sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString());
+      let priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(1);
+
+      await sector3DAO.removePriority(priorities[0]);
+      const prioritiesAfterRemoval = await sector3DAO.getPriorities();
+      console.log('prioritiesAfterRemoval:', prioritiesAfterRemoval);
+      expect(prioritiesAfterRemoval.length).to.equal(0);
+    })
+
+    it("remove priority - from array of 2", async function () {
+      const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
+
+      await sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString());
+      await sector3DAO.deployPriority('Priority #2', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 14, (4.098 * 1e18).toString());
+      let priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(2);
+
+      await sector3DAO.removePriority(priorities[0]);
+      const prioritiesAfterRemoval = await sector3DAO.getPriorities();
+      console.log('prioritiesAfterRemoval:', prioritiesAfterRemoval);
+      expect(prioritiesAfterRemoval.length).to.equal(1);
+      expect(prioritiesAfterRemoval[0]).to.equal(priorities[1]);
+    })
+
+    it("remove priority, then deploy priority", async function () {
+      const { sector3DAO } = await loadFixture(deployOneYearLockFixture);
+
+      await sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString());
+      await sector3DAO.deployPriority('Priority #2', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 14, (4.098 * 1e18).toString());
+      let priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(2);
+
+      await sector3DAO.removePriority(priorities[0]);
+      const prioritiesAfterRemoval = await sector3DAO.getPriorities();
+      console.log('prioritiesAfterRemoval:', prioritiesAfterRemoval);
+      expect(prioritiesAfterRemoval.length).to.equal(1);
+      expect(prioritiesAfterRemoval[0]).to.equal(priorities[1]);
+
+      await sector3DAO.deployPriority('Priority #3', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 21, (6.147 * 1e18).toString());
+      priorities = await sector3DAO.getPriorities();
+      console.log('priorities:', priorities);
+      expect(priorities.length).to.equal(2);
+    })
+  })
 });

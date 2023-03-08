@@ -12,7 +12,7 @@ contract Sector3DAO {
   /**
    * The smart contract version.
    */
-  uint8 public constant version = 3;
+  uint8 public constant version = 0;
 
   /**
    * The smart contract owner.
@@ -86,6 +86,16 @@ contract Sector3DAO {
   }
 
   function removePriority(Sector3DAOPriority priority) public {
-    // TODO
+    require(msg.sender == owner, "You aren't the owner");
+    Sector3DAOPriority[] memory prioritiesAfterRemoval = new Sector3DAOPriority[](priorities.length - 1);
+    uint16 prioritiesIndex = 0;
+    for (uint16 i = 0; i < prioritiesAfterRemoval.length; i++) {
+      if (priority == priorities[prioritiesIndex]) {
+        prioritiesIndex++;
+      }
+      prioritiesAfterRemoval[i] = priorities[prioritiesIndex];
+      prioritiesIndex++;
+    }
+    priorities = prioritiesAfterRemoval;
   }
 }

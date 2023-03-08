@@ -9,12 +9,12 @@ import "./Structs.sol";
 contract Sector3DAOPriority is IPriority {
   using SafeERC20 for IERC20;
 
-  address public dao;
+  address public immutable dao;
   string public title;
-  IERC20 public rewardToken;
-  uint256 public startTime;
-  uint16 public epochDuration;
-  uint256 public epochBudget;
+  IERC20 public immutable rewardToken;
+  uint256 public immutable startTime;
+  uint16 public immutable epochDuration;
+  uint256 public immutable epochBudget;
   Contribution[] contributions;
 
   event ContributionAdded(Contribution contribution);
