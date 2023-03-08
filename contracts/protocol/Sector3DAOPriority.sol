@@ -119,7 +119,7 @@ contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
 
     for (uint i = 0; i < tokenGating.length; i++) {
       TokenGating memory gating = tokenGating[i];
-      if (balanceOf(msg.sender) > 0) {
+      if (gateBalanceOf(msg.sender, gating.tokenId) > 0) {
         hasToken = true;
         alignmentPercentage = gating.alignmentPercentage;
         break;
@@ -133,6 +133,12 @@ contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
       revert("Not eligible to claim reward");
     }
   }
+
+  function gateBalanceOf(address owner, uint256 tokenId) public view returns (uint256) {
+    require(_exists(tokenId), "Token doesn't exist");
+    return ownerOf(tokenId) == owner ? 1 : 0;
+  }
+
 
   /**
    * Calculates a contributor's token allocation of the budget for a given epoch.
