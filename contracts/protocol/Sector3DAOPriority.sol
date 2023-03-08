@@ -2,13 +2,13 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IPriority.sol";
 import "./Enums.sol";
 import "./Structs.sol";
 
-contract Sector3DAOPriority is IPriority, ERC721, Ownable {
+contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
   using SafeERC20 for IERC20;
 
   address public immutable dao;
@@ -49,7 +49,10 @@ contract Sector3DAOPriority is IPriority, ERC721, Ownable {
     }
   }
 
-
+   function mint(address to, uint256 tokenId, string memory tokenURI) public onlyOwner {
+    _mint(to, tokenId);
+    _setTokenURI(tokenId, tokenURI);
+  }
 
   /**
    * Calculates the current epoch index based on the `Priority`'s start time and epoch duration.
