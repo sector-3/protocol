@@ -2,11 +2,13 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IPriority.sol";
 import "./Enums.sol";
 import "./Structs.sol";
 
-contract Sector3DAOPriority is IPriority {
+contract Sector3DAOPriority is IPriority, ERC721, Ownable {
   using SafeERC20 for IERC20;
 
   address public immutable dao;
@@ -16,6 +18,14 @@ contract Sector3DAOPriority is IPriority {
   uint16 public immutable epochDuration;
   uint256 public immutable epochBudget;
   Contribution[] contributions;
+  
+  struct TokenGating {
+    uint8 alignmentPercentage;
+    uint256 tokenId;
+  }
+
+  mapping (uint16 => TokenGating[]) public epochTokenGating;
+
 
   event ContributionAdded(Contribution contribution);
   event RewardClaimed(uint16 epochIndex, address contributor, uint256 amount);
@@ -23,7 +33,7 @@ contract Sector3DAOPriority is IPriority {
   error EpochNotYetEnded();
   error NoRewardForEpoch();
 
-  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_) {
+  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_) ERC721("Sector3 Token Gate", "S3TG") {
     dao = dao_;
     title = title_;
     rewardToken = IERC20(rewardToken_);
@@ -31,6 +41,15 @@ contract Sector3DAOPriority is IPriority {
     epochDuration = epochDurationInDays;
     epochBudget = epochBudget_;
   }
+
+
+  function setTokenGating(uint16 epochIndex, TokenGating[] memory tokenGatings) public onlyOwner {
+    for (uint i = 0; i < tokenGatings.length; i++) {
+      epochTokenGating[epochIndex].push(tokenGatings[i]);
+    }
+  }
+
+
 
   /**
    * Calculates the current epoch index based on the `Priority`'s start time and epoch duration.
@@ -90,8 +109,26 @@ contract Sector3DAOPriority is IPriority {
     if (epochReward == 0) {
       revert NoRewardForEpoch();
     }
-    rewardToken.transfer(msg.sender, epochReward);
-    emit RewardClaimed(epochIndex, msg.sender, epochReward);
+
+    TokenGating[] memory tokenGating = epochTokenGating[epochIndex];
+    bool hasToken = false;
+    uint8 alignmentPercentage = 0;
+
+    for (uint i = 0; i < tokenGating.length; i++) {
+      TokenGating memory gating = tokenGating[i];
+      if (balanceOf(msg.sender) > 0) {
+        hasToken = true;
+        alignmentPercentage = gating.alignmentPercentage;
+        break;
+      }
+    }
+
+    if (hasToken && getAllocationPercentage(epochIndex, msg.sender) >= alignmentPercentage) {
+      rewardToken.transfer(msg.sender, epochReward);
+      emit RewardClaimed(epochIndex, msg.sender, epochReward);
+    } else {
+      revert("Not eligible to claim reward");
+    }
   }
 
   /**
