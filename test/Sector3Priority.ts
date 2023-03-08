@@ -621,6 +621,34 @@ describe("Sector3DAOPriority", function () {
   });
 
   describe("Token Gating", async function () {
+    async function deployFixture() {
+      const [owner, contributor] = await ethers.getSigners();
+
+      const Sector3DAOPriority = await ethers.getContractFactory(
+        "Sector3DAOPriority"
+      );
+      const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63"; // Sector#3
+      const title = "Priority Title";
+      const SECTOR3 = await ethers.getContractFactory("SECTOR3");
+      const rewardToken = await SECTOR3.deploy();
+      const epochDurationInDays = 7; // Weekly
+      const epochBudget = (2.049 * 1e18).toString(); // 2.049
+      const sector3DAOPriority = await Sector3DAOPriority.deploy(
+        dao,
+        title,
+        rewardToken.address,
+        epochDurationInDays,
+        epochBudget
+      );
+
+      // Mint an ERC721 token and associate it with a 40% alignment requirement for the first epoch
+      await sector3DAOPriority.mint(contributor.address, 1);
+      const tokenGating = [{ alignmentPercentage: 40, tokenId: 1 }];
+      await sector3DAOPriority.setTokenGating(0, tokenGating);
+
+      return { sector3DAOPriority, owner, contributor, rewardToken };
+    }
+
     it("should only reward contributors who meet token-gating requirements", async function () {
       const { sector3DAOPriority, owner, otherAccount, rewardToken } =
         await loadFixture(deployFixture);
@@ -701,6 +729,19 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       console.log("Time 1 week later:", await time.latest());
 
+      const epochBudget = await sector3DAOPriority.epochBudget();
+
+      await expect(
+        sector3DAOPriority.claimReward(0)
+      ).to.be.revertedWithCustomError(sector3DAOPriority, "NoRewardForEpoch");
+
+      // Transfer funding to the contract
+      const rewardToken = await sector3DAOPriority.rewardToken();
+      rewardToken.transfer(sector3DAOPriority.address, epochBudget);
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(
+        epochBudget
+      );
+
       await expect(
         sector3DAOPriority.claimReward(0)
       ).to.be.revertedWithCustomError(sector3DAOPriority, "NoRewardForEpoch");
@@ -712,14 +753,10 @@ describe("Sector3DAOPriority", function () {
       );
 
       await sector3DAOPriority.addContribution({
-        timestamp: 2_049,
-        epochIndex: 2_049,
-        contributor: owner.address,
         description: "Description #1",
         proofURL: "https://github.com/sector-3",
-        alignment: 3, // Alignment.Mostly
-        alignmentPercentage: 3 * 20,
         hoursSpent: 5,
+        alignment: Alignment.Mostly,
       });
 
       // Increase the time by 1 week
@@ -729,12 +766,12 @@ describe("Sector3DAOPriority", function () {
       console.log("Time 1 week later:", await time.latest());
 
       // Transfer funding to the contract
-      rewardToken.transfer(
+      await rewardToken.transfer(
         sector3DAOPriority.address,
-        ethers.utils.parseUnits("2.049")
+        ethers.utils.parseUnits("2049")
       );
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(
-        ethers.utils.parseUnits("2.049")
+        ethers.utils.parseUnits("2049")
       );
 
       // Claim reward
@@ -749,23 +786,17 @@ describe("Sector3DAOPriority", function () {
         await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
-        timestamp: 2_049,
-        epochIndex: 2_049,
-        contributor: owner.address,
         description: "Description #1",
         proofURL: "https://github.com/sector-3",
-        alignment: 3, // Alignment.Mostly
+        alignment: 3,
         alignmentPercentage: 3 * 20,
         hoursSpent: 5,
       });
 
       await sector3DAOPriority.connect(otherAccount).addContribution({
-        timestamp: 2_049,
-        epochIndex: 2_049,
-        contributor: owner.address,
         description: "Description #2",
         proofURL: "https://github.com/sector-3",
-        alignment: 3, // Alignment.Mostly
+        alignment: 3,
         alignmentPercentage: 3 * 20,
         hoursSpent: 5,
       });
@@ -777,28 +808,28 @@ describe("Sector3DAOPriority", function () {
       console.log("Time 1 week later:", await time.latest());
 
       // Transfer funding to the contract
-      rewardToken.transfer(
+      await rewardToken.transfer(
         sector3DAOPriority.address,
-        ethers.utils.parseUnits("2.049")
+        ethers.utils.parseUnits("2049")
       );
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(
-        ethers.utils.parseUnits("2.049")
+        ethers.utils.parseUnits("2049")
       );
 
       // Claim reward (owner account)
       await sector3DAOPriority.claimReward(0);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(
-        ethers.utils.parseUnits("1.0245")
+        ethers.utils.parseUnits("1024.5")
       );
 
       // Claim reward (other account)
       expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(0);
       await sector3DAOPriority.connect(otherAccount).claimReward(0);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(
-        0
+        ethers.utils.parseUnits("0")
       );
       expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(
-        ethers.utils.parseUnits("1.0245")
+        ethers.utils.parseUnits("1024.5")
       );
     });
   });
