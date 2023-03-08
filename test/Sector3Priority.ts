@@ -266,10 +266,13 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       const tx = await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
       console.log("tx:", tx);
@@ -281,18 +284,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
 
@@ -303,10 +312,13 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
 
@@ -330,10 +342,13 @@ describe("Sector3DAOPriority", function () {
       console.log("Time 1 week later:", await time.latest());
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
 
@@ -357,18 +372,24 @@ describe("Sector3DAOPriority", function () {
       console.log("Time 1 week later:", await time.latest());
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 10
       });
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
         description: "Description 2 (test)",
-        alignment: 4,  // Alignment.Perfectly
+        proofURL: "https://github.com/sector-3",
+        alignment: 4,  // Alignment.Highly
+        alignmentPercentage: 4 * 20,
         hoursSpent: 12
       });
 
@@ -398,18 +419,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description (test)",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #2",
+        description: "Description #2",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -429,18 +456,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
       await sector3DAOPriority.connect(otherAccount).addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
-        contributor: otherAccount.address,
-        description: "Contribution #2",
+        contributor: owner.address,
+        description: "Description #2",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -463,18 +496,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #2",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -494,18 +533,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
       await sector3DAOPriority.connect(otherAccount).addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
-        contributor: otherAccount.address,
-        description: "Contribution #2",
+        contributor: owner.address,
+        description: "Description #2",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -528,10 +573,13 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -560,10 +608,13 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
@@ -586,18 +637,24 @@ describe("Sector3DAOPriority", function () {
       const { sector3DAOPriority, owner, otherAccount, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
         contributor: owner.address,
-        description: "Contribution #1",
+        description: "Description #1",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 
       await sector3DAOPriority.connect(otherAccount).addContribution({
+        timestamp: 2_049,
         epochIndex: 2_049,
-        contributor: otherAccount.address,
-        description: "Contribution #2",
+        contributor: owner.address,
+        description: "Description #2",
+        proofURL: "https://github.com/sector-3",
         alignment: 3,  // Alignment.Mostly
+        alignmentPercentage: 3 * 20,
         hoursSpent: 5
       });
 

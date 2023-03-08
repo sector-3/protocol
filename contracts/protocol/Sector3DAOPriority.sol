@@ -9,12 +9,12 @@ import "./Structs.sol";
 contract Sector3DAOPriority is IPriority {
   using SafeERC20 for IERC20;
 
-  address public dao;
+  address public immutable dao;
   string public title;
-  IERC20 public rewardToken;
-  uint256 public startTime;
-  uint16 public epochDuration;
-  uint256 public epochBudget;
+  IERC20 public immutable rewardToken;
+  uint256 public immutable startTime;
+  uint16 public immutable epochDuration;
+  uint256 public immutable epochBudget;
   Contribution[] contributions;
 
   event ContributionAdded(Contribution contribution);
@@ -42,14 +42,35 @@ contract Sector3DAOPriority is IPriority {
   }
 
   function addContribution(Contribution memory contribution) public {
+    contribution.timestamp = block.timestamp;
     contribution.epochIndex = getEpochIndex();
     contribution.contributor = msg.sender;
+    contribution.alignmentPercentage = uint8(contribution.alignment) * 20;
+    contributions.push(contribution);
+    emit ContributionAdded(contribution);
+  }
+
+  function addContribution2(string memory description, string memory proofURL, uint8 hoursSpent, Alignment alignment) public {
+    Contribution memory contribution = Contribution({
+      timestamp: block.timestamp,
+      epochIndex: getEpochIndex(),
+      contributor: msg.sender,
+      description: description,
+      proofURL: proofURL,
+      hoursSpent: hoursSpent,
+      alignment: alignment,
+      alignmentPercentage: uint8(alignment) * 20
+    });
     contributions.push(contribution);
     emit ContributionAdded(contribution);
   }
 
   function getContributionCount() public view returns (uint16) {
     return uint16(contributions.length);
+  }
+
+  function getContributions() public view returns (Contribution[] memory) {
+    return contributions;
   }
 
   function getContribution(uint16 index) public view returns (Contribution memory) {

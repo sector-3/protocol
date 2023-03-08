@@ -7,7 +7,7 @@ async function main() {
   console.log('process.env.ETHERSCAN_API_KEY exists:', process.env.ETHERSCAN_API_KEY != undefined)
   
   const Sector3DAO = await ethers.getContractFactory("Sector3DAO");
-  const sector3DAO = await Sector3DAO.deploy("<name>", "<purpose>");
+  const sector3DAO = await Sector3DAO.deploy("<name>", "<purpose>", "<token>");
 
   await sector3DAO.deployed();
 
