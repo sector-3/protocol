@@ -1,17 +1,17 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log('Deploying protocol/Sector3DAO.sol')
+  console.log('Deploying protocol/Sector3DAOFactory.sol')
   
   console.log('process.env.DEPLOYER_PRIVATE_KEY exists:', process.env.DEPLOYER_PRIVATE_KEY != undefined)
   console.log('process.env.ETHERSCAN_API_KEY exists:', process.env.ETHERSCAN_API_KEY != undefined)
   
-  const Sector3DAO = await ethers.getContractFactory("Sector3DAO");
-  const sector3DAO = await Sector3DAO.deploy("Sector#3 DAO", "Enable autonomous DAO contributions", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1");
+  const Sector3DAOFactory = await ethers.getContractFactory("Sector3DAOFactory");
+  const sector3DAOFactory = await Sector3DAOFactory.deploy();
 
-  await sector3DAO.deployed();
+  await sector3DAOFactory.deployed();
 
-  console.log(`Sector3DAO deployed to ${sector3DAO.address}`);
+  console.log(`Sector3DAOFactory deployed to ${sector3DAOFactory.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

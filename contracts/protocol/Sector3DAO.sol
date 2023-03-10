@@ -10,7 +10,7 @@ import './Sector3DAOPriority.sol';
 contract Sector3DAO {
 
   /**
-   * The smart contract version.
+   * The protocol version.
    */
   uint8 public constant version = 0;
 
