@@ -126,7 +126,7 @@ contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
       }
     }
 
-    if (hasToken && getAllocationPercentage(epochIndex, msg.sender) >= alignmentPercentage) {
+    if (hasToken && getAllocationPercentage(epochIndex, msg.sender) > alignmentPercentage) {
       rewardToken.transfer(msg.sender, epochReward);
       emit RewardClaimed(epochIndex, msg.sender, epochReward);
     } else {
@@ -170,7 +170,7 @@ contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
     if (hoursSpentAllContributors == 0) {
       return 0;
     } else {
-      return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
+      return uint8(hoursSpentContributor * 100 / (hoursSpentAllContributors == 0 ? 1 : hoursSpentAllContributors));
     }
   }
 }
