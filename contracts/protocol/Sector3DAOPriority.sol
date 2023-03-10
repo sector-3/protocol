@@ -130,7 +130,7 @@ contract Sector3DAOPriority is IPriority, ERC721URIStorage, Ownable {
       rewardToken.transfer(msg.sender, epochReward);
       emit RewardClaimed(epochIndex, msg.sender, epochReward);
     } else {
-      revert("Not eligible to claim reward");
+      revert NoRewardForEpoch();
     }
   }
 
