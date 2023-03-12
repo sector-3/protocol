@@ -153,11 +153,11 @@ describe("Sector3DAOPriority", function () {
   });
 
   
-  describe("getEpochIndex - EpochDuration.Weekly", async function() {
+  describe("getepochNumber - EpochDuration.Weekly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 1 after 1 week", async function() {
@@ -169,16 +169,16 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(1);
     });
   });
 
   
-  describe("getEpochIndex - EpochDuration.Biweekly", async function() {
+  describe("getepochNumber - EpochDuration.Biweekly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 0 after 1 week", async function() {
@@ -190,7 +190,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 1 after 2 weeks", async function() {
@@ -202,7 +202,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 2 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(1);
     });
 
     it("Should return 1 after 3 weeks", async function() {
@@ -214,7 +214,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 3 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(1);
     });
 
     it("Should return 2 after 4 weeks", async function() {
@@ -226,16 +226,16 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 4 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(2);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(2);
     });
   });
 
   
-  describe("getEpochIndex - EpochDuration.Monthly", async function() {
+  describe("getepochNumber - EpochDuration.Monthly", async function() {
     it("Should return 0 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 0 after 1 week", async function() {
@@ -247,7 +247,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 0 after 2 weeks", async function() {
@@ -259,7 +259,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 2 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 0 after 3 weeks", async function() {
@@ -271,7 +271,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 3 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(0);
     });
 
     it("Should return 1 after 4 weeks", async function() {
@@ -283,7 +283,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 4 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getepochNumber()).to.equal(1);
     });
   });
 
@@ -346,7 +346,7 @@ describe("Sector3DAOPriority", function () {
       const contribution = contributions[0];
       // console.log("contribution:", contribution);
 
-      expect(contribution.epochIndex).to.equal(0);
+      expect(contribution.epochNumber).to.equal(0);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.hoursSpent).to.equal(10);
@@ -373,7 +373,7 @@ describe("Sector3DAOPriority", function () {
       const contribution = contributions[0];
       // console.log("contribution:", contribution);
 
-      expect(contribution.epochIndex).to.equal(1);
+      expect(contribution.epochNumber).to.equal(1);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.hoursSpent).to.equal(10);
@@ -407,7 +407,7 @@ describe("Sector3DAOPriority", function () {
       const contribution1 = contributions[0];
       // console.log("contribution1:", contribution1);
 
-      expect(contribution1.epochIndex).to.equal(1);
+      expect(contribution1.epochNumber).to.equal(1);
       expect(contribution1.contributor).to.equal(owner.address);
       expect(contribution1.description).to.equal("Description (test)");
       expect(contribution1.hoursSpent).to.equal(10);
@@ -416,7 +416,7 @@ describe("Sector3DAOPriority", function () {
       const contribution2 = contributions[1];
       // console.log("contribution2:", contribution2);
 
-      expect(contribution2.epochIndex).to.equal(1);
+      expect(contribution2.epochNumber).to.equal(1);
       expect(contribution2.contributor).to.equal(owner.address);
       expect(contribution2.description).to.equal("Description 2 (test)");
       expect(contribution2.hoursSpent).to.equal(12);
