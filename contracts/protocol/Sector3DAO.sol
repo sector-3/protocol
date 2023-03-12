@@ -77,10 +77,6 @@ contract Sector3DAO {
     return priority;
   }
 
-  function getPriorityCount() public view returns (uint16) {
-    return uint16(priorities.length);
-  }
-
   function getPriorities() public view returns (Sector3DAOPriority[] memory) {
     return priorities;
   }
