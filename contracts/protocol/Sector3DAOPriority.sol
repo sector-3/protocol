@@ -17,12 +17,14 @@ contract Sector3DAOPriority is IPriority {
   uint256 public immutable epochBudget;
   IERC721 public immutable gatingNFT;
   Contribution[] contributions;
+  mapping(uint16 => mapping(address => bool)) claims;
 
   event ContributionAdded(Contribution contribution);
   event RewardClaimed(uint16 epochIndex, address contributor, uint256 amount);
 
   error EpochNotYetEnded();
   error NoRewardForEpoch();
+  error RewardAlreadyClaimed();
   error NoGatingNFTOwnership();
 
   constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_, address gatingNFT_) {
@@ -80,7 +82,12 @@ contract Sector3DAOPriority is IPriority {
     if (epochReward == 0) {
       revert NoRewardForEpoch();
     }
+    bool rewardClaimed = isRewardClaimed(epochIndex, msg.sender);
+    if (rewardClaimed) {
+      revert RewardAlreadyClaimed();
+    }
     rewardToken.transfer(msg.sender, epochReward);
+    claims[epochIndex][msg.sender] = true;
     emit RewardClaimed(epochIndex, msg.sender, epochReward);
   }
 
@@ -92,6 +99,13 @@ contract Sector3DAOPriority is IPriority {
   function getEpochReward(uint16 epochIndex, address contributor) public view returns (uint256) {
     uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
     return epochBudget * allocationPercentage / 100;
+  }
+
+  /**
+   * Checks if a contributor's reward has been claimed for a given epoch.
+   */
+  function isRewardClaimed(uint16 epochIndex, address contributor) public view returns (bool) {
+    return claims[epochIndex][contributor];
   }
 
   /**
