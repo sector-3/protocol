@@ -70,9 +70,9 @@ contract Sector3DAO {
     token = token_;
   }
 
-  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget) public returns (Sector3DAOPriority) {
+  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget, address gatingNFT) public returns (Sector3DAOPriority) {
     require(msg.sender == owner, "You aren't the owner");
-    Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget);
+    Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget, gatingNFT);
     priorities.push(priority);
     return priority;
   }

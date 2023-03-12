@@ -2,6 +2,7 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./IPriority.sol";
 import "./Enums.sol";
 import "./Structs.sol";
@@ -15,6 +16,7 @@ contract Sector3DAOPriority is IPriority {
   uint256 public immutable startTime;
   uint16 public immutable epochDuration;
   uint256 public immutable epochBudget;
+  IERC721 public immutable gatingNFT;
   Contribution[] contributions;
 
   event ContributionAdded(Contribution contribution);
@@ -22,14 +24,16 @@ contract Sector3DAOPriority is IPriority {
 
   error EpochNotYetEnded();
   error NoRewardForEpoch();
+  error NoGatingNFTOwnership();
 
-  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_) {
+  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_, address gatingNFT_) {
     dao = dao_;
     title = title_;
     rewardToken = IERC20(rewardToken_);
     startTime = block.timestamp;
     epochDuration = epochDurationInDays;
     epochBudget = epochBudget_;
+    gatingNFT = IERC721(gatingNFT_);
   }
 
   /**
@@ -51,6 +55,11 @@ contract Sector3DAOPriority is IPriority {
   }
 
   function addContribution2(string memory description, string memory proofURL, uint8 hoursSpent, Alignment alignment) public {
+    if (address(gatingNFT) != address(0x0)) {
+      if (gatingNFT.balanceOf(msg.sender) == 0) {
+        revert NoGatingNFTOwnership();
+      }
+    }
     Contribution memory contribution = Contribution({
       timestamp: block.timestamp,
       epochIndex: getEpochIndex(),

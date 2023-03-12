@@ -21,7 +21,8 @@ describe("Sector3DAOPriority", function () {
     const rewardToken = await SECTOR3.deploy();
     const epochDurationInDays = 7;  // Weekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
+    const gatingNFT = ethers.constants.AddressZero;
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
@@ -42,7 +43,8 @@ describe("Sector3DAOPriority", function () {
     const rewardToken = await SECTOR3.deploy();
     const epochDurationInDays = 14;  // Biweekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
+    const gatingNFT = ethers.constants.AddressZero;
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
   }
@@ -63,9 +65,36 @@ describe("Sector3DAOPriority", function () {
     const rewardToken = await SECTOR3.deploy();
     const epochDurationInDays = 28;  // Monthly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget);
+    const gatingNFT = ethers.constants.AddressZero;
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken };
+  }
+
+
+  // We define a fixture to reuse the same setup in every test.
+  // We use loadFixture to run this setup once, snapshot that state,
+  // and reset Hardhat Network to that snapshot in every test.
+  async function deployWeeklyFixtureWithNFTGating() {
+    console.log('deployWeeklyFixtureWithNFTGating')
+
+    // Contracts are deployed using the first signer/account by default
+    const [owner, otherAccount] = await ethers.getSigners();
+    console.log('owner.address:', owner.address);
+    console.log('otherAccount.address:', otherAccount.address);
+    
+    const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
+    const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
+    const title = "Priority Title";
+    const SECTOR3 = await ethers.getContractFactory("SECTOR3");
+    const rewardToken = await SECTOR3.deploy();
+    const epochDurationInDays = 7;  // Weekly
+    const epochBudget = (2.049 * 1e18).toString();  // 2.049
+    const Sector3Dove = await ethers.getContractFactory("Sector3Dove");
+    const gatingNFT = await Sector3Dove.deploy();
+    const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT.address);
+
+    return { sector3DAOPriority, owner, otherAccount, rewardToken, gatingNFT };
   }
 
   
@@ -410,6 +439,37 @@ describe("Sector3DAOPriority", function () {
       expect(contribution2.description).to.equal("Description 2 (test)");
       expect(contribution2.alignment).to.equal(4);
       expect(contribution2.hoursSpent).to.equal(12);
+    });
+  });
+
+
+  describe("NFT gating - addContribution2", async function() {
+    it("should fail if NFT gating", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixtureWithNFTGating);
+
+      await expect(sector3DAOPriority.addContribution2(
+        "Description (test)",
+        "https://github.com/sector-3",
+        10,
+        3  // Alignment.Mostly
+      )).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "NoGatingNFTOwnership"
+      )
+    });
+
+    it("should succeed if NFT gating and account is NFT owner", async function() {
+      const { sector3DAOPriority, owner, gatingNFT } = await loadFixture(deployWeeklyFixtureWithNFTGating);
+      
+      await gatingNFT.safeMint(owner.address);
+
+      await sector3DAOPriority.addContribution2(
+        "Description (test)",
+        "https://github.com/sector-3",
+        10,
+        3  // Alignment.Mostly
+      );
+      expect(await sector3DAOPriority.getContributionCount()).to.equal(1);
     });
   });
 
