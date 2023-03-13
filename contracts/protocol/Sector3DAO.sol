@@ -47,6 +47,14 @@ contract Sector3DAO {
   }
 
   /**
+   * Updates the DAO's owner.
+   */
+  function setOwner(address owner_) public {
+    require(msg.sender == owner, "You aren't the owner");
+    owner = owner_;
+  }
+
+  /**
    * Updates the DAO's name.
    */
   function setName(string calldata name_) public {
