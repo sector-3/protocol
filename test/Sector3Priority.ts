@@ -629,7 +629,7 @@ describe("Sector3DAOPriority", function () {
       // console.log("Time 1 week later:", await time.latest());
 
       // Transfer funding to the contract
-      rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward
@@ -661,7 +661,7 @@ describe("Sector3DAOPriority", function () {
       // console.log("Time 1 week later:", await time.latest());
 
       // Transfer funding to the contract
-      rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (owner account)
@@ -673,6 +673,160 @@ describe("Sector3DAOPriority", function () {
       await sector3DAOPriority.connect(otherAccount).claimReward(0);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(0);
       expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(ethers.utils.parseUnits("1.0245"));
+    });
+
+    it("Claim 50% - should revert if claimed twice for the same epoch", async function() {
+      const { sector3DAOPriority, owner, otherAccount, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        5,
+        60
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        5,
+        60
+      );
+
+      // Increase the time by 1 week
+      // console.log("Current time:", await time.latest());
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+      // console.log("Time 1 week later:", await time.latest());
+
+      // Transfer funding to the contract
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward (owner account)
+      await sector3DAOPriority.claimReward(0);
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
+
+      // Claim reward twice (owner account)
+      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "RewardAlreadyClaimed"
+      );
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
+    });
+  });
+
+
+  describe("isRewardClaimed", async function() {
+    it("epochIndex[0] - 0 contributions", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
+    });
+
+    it("epochIndex[0] - 0 claims", async function() {
+      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description",
+        "https://github.com/sector-3",
+        8,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
+    });
+
+    it("epochIndex[0] - 1 claim", async function() {
+      const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description",
+        "https://github.com/sector-3",
+        8,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Transfer funding to the contract
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward (owner account)
+      await sector3DAOPriority.claimReward(0);
+
+      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(true);
+    });
+
+    it("epochIndex[1] - 0 claims", async function() {
+      const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description",
+        "https://github.com/sector-3",
+        8,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Transfer funding to the contract
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward (owner account)
+      await sector3DAOPriority.claimReward(0);
+
+      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(true);
+
+      await sector3DAOPriority.addContribution(
+        "Description",
+        "https://github.com/sector-3",
+        8,
+        80
+      );
+
+      // Increase the time by 1 week
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      expect(await sector3DAOPriority.isRewardClaimed(1, owner.address)).to.equal(false);
+    });
+
+    it("epochIndex[0] - 1 claim by another account", async function() {
+      const { sector3DAOPriority, owner, otherAccount, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description",
+        "https://github.com/sector-3",
+        8,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Transfer funding to the contract
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      // Claim reward (other account)
+      await sector3DAOPriority.connect(otherAccount).claimReward(0);
+
+      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
+      expect(await sector3DAOPriority.isRewardClaimed(0, otherAccount.address)).to.equal(true);
     });
   });
 });
