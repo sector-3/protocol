@@ -597,8 +597,34 @@ describe("Sector3DAOPriority", function () {
       );
     });
 
+    it("Should revert if the epoch has not yet been funded", async function() {
+      const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "EpochNotYetFunded"
+      );
+
+      // Increase the time by 1 week
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Transfer funding to the contract (for the first epoch)
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
+      await expect(sector3DAOPriority.claimReward(1)).to.be.revertedWithCustomError(
+        sector3DAOPriority,
+        "EpochNotYetFunded"
+      );
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+    });
+
     it("Should revert if the account made no contributions during the epoch", async function() {
-      const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
+      const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       // Increase the time by 1 week
       // console.log("Current time:", await time.latest());
@@ -606,10 +632,15 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
+      // Transfer funding to the contract
+      await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
+
       await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "NoRewardForEpoch"
       );
+      expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
     });
 
     it("Claim 100%", async function() {
