@@ -74,6 +74,24 @@ contract Sector3DAOPriority is IPriority {
     return contributions;
   }
 
+  function getEpochContributions(uint16 epochIndex) public view returns (Contribution[] memory) {
+    uint16 count = 0;
+    for (uint16 i = 0; i < contributions.length; i++) {
+      if (contributions[i].epochIndex == epochIndex) {
+        count++;
+      }
+    }
+    Contribution[] memory epochContributions = new Contribution[](count);
+    count = 0;
+    for (uint16 i = 0; i < contributions.length; i++) {
+      if (contributions[i].epochIndex == epochIndex) {
+        epochContributions[count] = contributions[i];
+        count++;
+      }
+    }
+    return epochContributions;
+  }
+
   /**
    * Claims a contributor's reward for contributions made in a given epoch.
    * 
@@ -83,13 +101,13 @@ contract Sector3DAOPriority is IPriority {
     if (epochIndex >= getEpochIndex()) {
       revert EpochNotYetEnded();
     }
-    bool epochFunded = isEpochFunded(epochIndex);
-    if (!epochFunded) {
-      revert EpochNotYetFunded();
-    }
     uint256 epochReward = getEpochReward(epochIndex, msg.sender);
     if (epochReward == 0) {
       revert NoRewardForEpoch();
+    }
+    bool epochFunded = isEpochFunded(epochIndex);
+    if (!epochFunded) {
+      revert EpochNotYetFunded();
     }
     bool rewardClaimed = isRewardClaimed(epochIndex, msg.sender);
     if (rewardClaimed) {
@@ -143,11 +161,28 @@ contract Sector3DAOPriority is IPriority {
   }
 
   /**
-   * @notice Checks if the smart contract has received enough funding to cover claims for a given epoch.
+   * @notice Checks if the smart contract has received enough funding to cover claims for a past epoch.
+   * @dev Epochs without contributions are excluded from funding.
    */
   function isEpochFunded(uint16 epochIndex) public view returns (bool) {
-    uint256 totalFundingAmount = rewardToken.balanceOf(address(this)) + claimsBalance;
-    uint256 totalBudgetAmount = epochBudget * (epochIndex + 1);
-    return totalFundingAmount >= totalBudgetAmount;
+    if (epochIndex >= getEpochIndex()) {
+      revert EpochNotYetEnded();
+    }
+    if (getEpochContributions(epochIndex).length == 0) {
+      return false;
+    }
+    uint16 numberOfEpochsWithContributions = 0;
+    for (uint16 i = 0; i <= epochIndex; i++) {
+      if (getEpochContributions(i).length > 0) {
+        numberOfEpochsWithContributions++;
+      }
+    }
+    if (numberOfEpochsWithContributions == 0) {
+      return false;
+    } else {
+      uint256 totalBudget = epochBudget * numberOfEpochsWithContributions;
+      uint256 totalFundingReceived = rewardToken.balanceOf(address(this)) + claimsBalance;
+      return totalFundingReceived >= totalBudget;
+    }
   }
 }

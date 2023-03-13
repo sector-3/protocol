@@ -62,7 +62,7 @@ describe("Sector3DAOFactory", function () {
 
     await sector3DAOFactory.removeDAO(daos[0]); 
     const daosAfterRemoval = await sector3DAOFactory.getDAOs();
-    console.log('daosAfterRemoval:', daosAfterRemoval);
+    // console.log('daosAfterRemoval:', daosAfterRemoval);
     expect(daosAfterRemoval.length).to.equal(1);
     expect(daosAfterRemoval[0]).to.equal(daos[1]);
   })
