@@ -43,10 +43,10 @@ Deploy a smart contract to the local network:
 npx hardhat run --network localhost scripts/deploy-<contract>.ts
 ```
 
-Deploy a smart contract to the Goerli test network:
+Deploy a smart contract to the Sepolia test network:
 
 ```shell
-npx hardhat run --network goerli scripts/deploy-<contract>.ts
+npx hardhat run --network sepolia scripts/deploy-<contract>.ts
 ```
 
 Verify a contract on Etherscan:
