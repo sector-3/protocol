@@ -18,11 +18,13 @@ contract Sector3DAOPriority is IPriority {
   IERC721 public immutable gatingNFT;
   Contribution[] contributions;
   mapping(uint16 => mapping(address => bool)) claims;
+  uint256 public claimsBalance;
 
   event ContributionAdded(Contribution contribution);
   event RewardClaimed(uint16 epochIndex, address contributor, uint256 amount);
 
   error EpochNotYetEnded();
+  error EpochNotYetFunded();
   error NoRewardForEpoch();
   error RewardAlreadyClaimed();
   error NoGatingNFTOwnership();
@@ -46,6 +48,9 @@ contract Sector3DAOPriority is IPriority {
     return uint16(timePassedSinceStart / epochDurationInSeconds);
   }
 
+  /**
+   * @notice Adds a contribution to the current epoch.
+   */
   function addContribution(string memory description, string memory proofURL, uint8 hoursSpent, uint8 alignmentPercentage) public {
     if (address(gatingNFT) != address(0x0)) {
       if (gatingNFT.balanceOf(msg.sender) == 0) {
@@ -78,6 +83,10 @@ contract Sector3DAOPriority is IPriority {
     if (epochIndex >= getEpochIndex()) {
       revert EpochNotYetEnded();
     }
+    bool epochFunded = isEpochFunded(epochIndex);
+    if (!epochFunded) {
+      revert EpochNotYetFunded();
+    }
     uint256 epochReward = getEpochReward(epochIndex, msg.sender);
     if (epochReward == 0) {
       revert NoRewardForEpoch();
@@ -88,6 +97,7 @@ contract Sector3DAOPriority is IPriority {
     }
     rewardToken.transfer(msg.sender, epochReward);
     claims[epochIndex][msg.sender] = true;
+    claimsBalance += epochReward;
     emit RewardClaimed(epochIndex, msg.sender, epochReward);
   }
 
@@ -130,5 +140,14 @@ contract Sector3DAOPriority is IPriority {
     } else {
       return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
     }
+  }
+
+  /**
+   * @notice Checks if the smart contract has received enough funding to cover claims for a given epoch.
+   */
+  function isEpochFunded(uint16 epochIndex) public view returns (bool) {
+    uint256 totalFundingAmount = rewardToken.balanceOf(address(this)) + claimsBalance;
+    uint256 totalBudgetAmount = epochBudget * (epochIndex + 1);
+    return totalFundingAmount >= totalBudgetAmount;
   }
 }
