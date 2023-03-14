@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.19;
 
 import './Sector3DAOPriority.sol';
 
@@ -12,7 +12,7 @@ contract Sector3DAO {
   /**
    * The protocol version.
    */
-  uint8 public constant version = 0;
+  uint8 public constant version = 1;
 
   /**
    * The smart contract owner.
@@ -43,7 +43,15 @@ contract Sector3DAO {
     name = name_;
     purpose = purpose_;
     token = token_;
-    owner = msg.sender;
+    owner = tx.origin;
+  }
+
+  /**
+   * Updates the DAO's owner.
+   */
+  function setOwner(address owner_) public {
+    require(msg.sender == owner, "You aren't the owner");
+    owner = owner_;
   }
 
   modifier onlyOwner() {
@@ -73,22 +81,17 @@ contract Sector3DAO {
     token = token_;
   }
 
-  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget) public onlyOwner returns (Sector3DAOPriority) {
-    Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget);
+  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget, address gatingNFT) public onlyOwner returns (Sector3DAOPriority) {
+    Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget, gatingNFT);
     priorities.push(priority);
     return priority;
-  }
-
-  function getPriorityCount() public view returns (uint16) {
-    return uint16(priorities.length);
   }
 
   function getPriorities() public view returns (Sector3DAOPriority[] memory) {
     return priorities;
   }
 
-  function removePriority(Sector3DAOPriority priority) public onlyOwner {    
-    require(!priority.isInVotingPeriod(), "Cannot remove priority during voting period");
+  function removePriority(Sector3DAOPriority priority) public onlyOwner {        
     Sector3DAOPriority[] memory prioritiesAfterRemoval = new Sector3DAOPriority[](priorities.length - 1);
     uint16 prioritiesIndex = 0;
     for (uint16 i = 0; i < prioritiesAfterRemoval.length; i++) {

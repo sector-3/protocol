@@ -5,7 +5,7 @@ import "@nomiclabs/hardhat-etherscan";
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.17",
+    version: "0.8.19",
     settings: {
       optimizer: {
         enabled: true,
@@ -18,6 +18,10 @@ const config: HardhatUserConfig = {
       url: "https://rpc.ankr.com/eth_goerli",
       accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
     },
+    sepolia: {
+      url: "https://rpc.ankr.com/eth_sepolia",
+      accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
+    },
     mainnet: {
       url: "https://rpc.ankr.com/eth",
       accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
@@ -26,6 +30,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       goerli: String(process.env.ETHERSCAN_API_KEY),
+      sepolia: String(process.env.ETHERSCAN_API_KEY),
       mainnet: String(process.env.ETHERSCAN_API_KEY)
     }
   }

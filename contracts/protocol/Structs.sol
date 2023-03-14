@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
-
-import "./Enums.sol";
+pragma solidity ^0.8.19;
 
 struct Contribution {
   uint256 timestamp;
@@ -9,7 +7,6 @@ struct Contribution {
   address contributor;
   string description;
   string proofURL;
-  Alignment alignment;
-  uint8 alignmentPercentage;
   uint8 hoursSpent;
+  uint8 alignmentPercentage;
 }
