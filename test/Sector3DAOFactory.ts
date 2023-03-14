@@ -29,7 +29,7 @@ describe("Sector3DAOFactory", function () {
 
   describe("DAOs", function () {
     it("deploy DAO", async function () {
-      const { sector3DAOFactory } = await loadFixture(deployFixture);
+      const { sector3DAOFactory, owner } = await loadFixture(deployFixture);
 
       let daos = await sector3DAOFactory.getDAOs();
       // console.log('daos:', daos);
@@ -37,8 +37,12 @@ describe("Sector3DAOFactory", function () {
 
       await sector3DAOFactory.deployDAO("DAO #1", "Purpose #1", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1");
       daos = await sector3DAOFactory.getDAOs();
-      // console.log('daos:', daos);
+      console.log('daos:', daos);
       expect(daos.length).to.equal(1);
+
+      const Sector3DAO = await ethers.getContractFactory("Sector3DAO");
+      const sector3DAO = await Sector3DAO.attach(daos[0]);
+      expect(await sector3DAO.owner()).to.equal(owner.address);
 
       await sector3DAOFactory.deployDAO("DAO #2", "Purpose #2", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1");
       daos = await sector3DAOFactory.getDAOs();
