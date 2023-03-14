@@ -43,7 +43,7 @@ contract Sector3DAO {
     name = name_;
     purpose = purpose_;
     token = token_;
-    owner = msg.sender;
+    owner = tx.origin;
   }
 
   /**
