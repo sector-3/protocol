@@ -90,9 +90,19 @@ contract Sector3DAOPriority is IPriority {
     if (epochReward == 0) {
       revert NoRewardForEpoch();
     }
-    rewardToken.transfer(msg.sender, epochReward);
+    bool epochFunded = isEpochFunded(epochIndex);
+    if (!epochFunded) {
+      revert EpochNotYetFunded();
+    }
+    bool rewardClaimed = isRewardClaimed(epochIndex, msg.sender);
+    if (rewardClaimed) {
+      revert RewardAlreadyClaimed();
+    }
+    claims[epochIndex][msg.sender] = true;
+    claimsBalance += epochReward;
+    require(rewardToken.transfer(msg.sender, epochReward), "Reward transfer failed");
     emit RewardClaimed(epochIndex, msg.sender, epochReward);
-  }
+}
 
   /**
    * Calculates a contributor's token allocation of the budget for a given epoch.
@@ -103,6 +113,31 @@ contract Sector3DAOPriority is IPriority {
     uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
     return epochBudget * allocationPercentage / 100;
   }
+
+  /**
+ * @notice Checks if the smart contract has received enough funding to cover claims for a past epoch.
+ * 
+ * @param epochIndex The index of the epoch to check.
+ * @return A boolean indicating whether the epoch is funded or not.
+ * 
+ * @dev This function loops through all past epochs to calculate whether the current epoch is funded or not.
+ *      If the number of past epochs becomes very large, the function may consume an excessive amount of gas and fail to execute,
+ *      thereby preventing other legitimate functions from executing. Epochs without contributions are excluded from funding.
+ */
+
+  function isEpochFunded(uint16 epochIndex) public view returns (bool) {
+    if (epochIndex >= getEpochIndex()) {
+      revert EpochNotYetEnded();
+    }
+    if (getEpochContributions(epochIndex).length == 0) {
+      return false;
+    }
+    uint256 totalBudget = epochBudget * (epochIndex + 1);
+    uint256 totalFundingReceived = rewardToken.balanceOf(address(this)) + claimsBalance;
+    uint16 numberOfEpochsWithContributions = epochIndex + 1;
+    return totalFundingReceived >= totalBudget;
+  }
+
 
   /**
    * Calculates a contributor's percentage allocation of the budget for a given epoch.

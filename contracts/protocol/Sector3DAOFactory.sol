@@ -9,6 +9,8 @@ contract Sector3DAOFactory {
 
   address[] public daos;
 
+  error YouAreNotAuthorized();
+
   constructor() {
     owner = msg.sender;
     // daos.push(0x5FbDB2315678afecb367f032d93F642f64180aa3); // localhost
@@ -18,7 +20,15 @@ contract Sector3DAOFactory {
     daos.push(0x9741B82017485759c9Bcc13FeA10c1105f82d25C); // Bankless Africa (v0)
   }
 
-  function setOwner(address owner_) public {
+  
+
+  modifier onlyOwner() {
+    require(msg.sender == owner, "You are not authorized to perform this action.");
+    _;
+}
+
+
+  function setOwner(address owner_) public onlyOwner {
     require(msg.sender == owner, "You aren't the owner");
     owner = owner_;
   }
@@ -33,7 +43,7 @@ contract Sector3DAOFactory {
     return address(dao);
   }
 
-  function removeDAO(address dao) public {
+  function removeDAO(address dao) public onlyOwner {
     require(msg.sender == owner, "You aren't the owner");
     address[] memory daosAfterRemoval = new address[](daos.length - 1);
     uint16 daosIndex = 0;
