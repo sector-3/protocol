@@ -9,6 +9,13 @@ import "./Structs.sol";
 contract Sector3DAOPriority is IPriority {
   using SafeERC20 for IERC20;
 
+
+  struct Rating {
+    uint16 contributionIndex;
+    address rater;
+    uint8 rating;
+  }
+
   address public immutable dao;
   string public title;
   IERC20 public immutable rewardToken;
@@ -17,19 +24,24 @@ contract Sector3DAOPriority is IPriority {
   uint256 public immutable epochBudget;
   IERC721 public immutable gatingNFT;
   Contribution[] contributions;
+  Rating[] ratings;
   mapping(uint16 => mapping(address => bool)) claims;
   uint256 public claimsBalance;
+  uint16 public immutable coolingWindowDuration;
 
   event ContributionAdded(Contribution contribution);
   event RewardClaimed(uint16 epochIndex, address contributor, uint256 amount);
+  event ContributionRated(uint16 contributionIndex, address rater, uint8 rating);
+  event RatingUpdated(uint16 contributionIndex, address rater, uint8 newRating);
 
   error EpochNotYetEnded();
   error EpochNotYetFunded();
   error NoRewardForEpoch();
   error RewardAlreadyClaimed();
   error NoGatingNFTOwnership();
+  error CoolingWindowNotEnded();
 
-  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_, address gatingNFT_) {
+  constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_, address gatingNFT_, uint16 coolingWindowDurationInDays) {
     dao = dao_;
     title = title_;
     rewardToken = IERC20(rewardToken_);
@@ -37,6 +49,7 @@ contract Sector3DAOPriority is IPriority {
     epochDuration = epochDurationInDays;
     epochBudget = epochBudget_;
     gatingNFT = IERC721(gatingNFT_);
+    coolingWindowDuration = coolingWindowDurationInDays;
   }
 
   /**
@@ -101,6 +114,9 @@ contract Sector3DAOPriority is IPriority {
     if (epochIndex >= getEpochIndex()) {
       revert EpochNotYetEnded();
     }
+    if (block.timestamp < getCoolingWindowEndTime(epochIndex)) {
+      revert CoolingWindowNotEnded();
+  }
     uint256 epochReward = getEpochReward(epochIndex, msg.sender);
     if (epochReward == 0) {
       revert NoRewardForEpoch();
@@ -184,5 +200,65 @@ contract Sector3DAOPriority is IPriority {
       uint256 totalFundingReceived = rewardToken.balanceOf(address(this)) + claimsBalance;
       return totalFundingReceived >= totalBudget;
     }
+  }
+
+  function rateContribution(uint16 contributionIndex, uint8 rating) public {
+    require(contributionIndex < contributions.length, "Invalid contribution index");
+    require(rating >= 1 && rating <= 5, "Invalid rating value");
+
+    uint16 ratingIndex = findRatingIndex(contributionIndex, msg.sender);
+
+    if (ratingIndex < ratings.length) {
+      ratings[ratingIndex].rating = rating;
+      emit RatingUpdated(contributionIndex, msg.sender, rating);
+    } else {
+      Rating memory newRating = Rating({
+        contributionIndex: contributionIndex,
+        rater: msg.sender,
+        rating: rating
+      });
+      ratings.push(newRating);
+      emit ContributionRated(contributionIndex, msg.sender, rating);
+    }
+  }
+
+  function findRatingIndex(uint16 contributionIndex, address rater) internal view returns (uint16) {
+    for (uint16 i = 0; i < ratings.length; i++) {
+      if (ratings[i].contributionIndex == contributionIndex && ratings[i].rater == rater) {
+        return i;
+      }
+    }
+    return uint16(ratings.length);
+  }
+
+  function getContributionRating(uint16 contributionIndex) public view returns (uint8) {
+    require(contributionIndex < contributions.length, "Invalid contribution index");
+
+    uint16 totalRatings = 0;
+    uint16 sumRatings = 0;
+
+    for (uint16 i = 0; i < ratings.length; i++) {
+      if (ratings[i].contributionIndex == contributionIndex) {
+        totalRatings++;
+        sumRatings += ratings[i].rating;
+      }
+    }
+
+    if (totalRatings == 0) {
+      return 0;
+    } else {
+      return uint8(sumRatings / totalRatings);
+    }
+  }
+
+  /**
+   * @notice Gets the end time of the cooling window for an epoch.
+   * @dev This should be implemented based on the requirements of the DAO.
+   * @param epochIndex The index of the epoch.
+   */
+  function getCoolingWindowEndTime(uint16 epochIndex) public view returns (uint256) {
+    uint256 epochEndTime = startTime + (epochIndex + 1) * epochDuration * 1 days;
+    uint256 localCoolingWindowDuration = 3 * 1 days;
+    return epochEndTime + localCoolingWindowDuration;
   }
 }

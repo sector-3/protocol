@@ -5,40 +5,45 @@ import './Sector3DAO.sol';
 
 contract Sector3DAOFactory {
 
-  address public owner;
+  address public immutable owner;
 
   address[] public daos;
+
+  event DAODeployed(address dao);
 
   constructor() {
     owner = msg.sender;
   }
 
-  function setOwner(address owner_) public {
+  modifier onlyOwner() {
     require(msg.sender == owner, "You aren't the owner");
-    owner = owner_;
+    _;
   }
 
   function getDAOs() public view returns (address[] memory) {
     return daos;
   }
 
-  function deployDAO(string calldata name, string calldata purpose, address token) public returns (address) {
+  function deployDAO(string calldata name, string calldata purpose, address token) public  returns (address) {
     Sector3DAO dao = new Sector3DAO(name, purpose, token);
     daos.push(address(dao));
     return address(dao);
   }
 
-  function removeDAO(address dao) public {
-    require(msg.sender == owner, "You aren't the owner");
-    address[] memory daosAfterRemoval = new address[](daos.length - 1);
-    uint16 daosIndex = 0;
-    for (uint16 i = 0; i < daosAfterRemoval.length; i++) {
-      if (dao == daos[daosIndex]) {
-        daosIndex++;
+  function removeDAO(address dao) public onlyOwner {
+    uint256 indexToRemove = daos.length;
+
+    for (uint256 i = 0; i < daos.length; i++) {
+      if (dao == daos[i]) {
+        indexToRemove = i;
+        break;
       }
-      daosAfterRemoval[i] = daos[daosIndex];
-      daosIndex++;
     }
-    daos = daosAfterRemoval;
+
+    require(indexToRemove < daos.length, "DAO not found");
+    
+    // Use the "delete-and-swap" technique to save gas.
+    daos[indexToRemove] = daos[daos.length - 1];
+    daos.pop();
   }
 }
