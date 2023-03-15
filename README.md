@@ -25,8 +25,16 @@ npx hardhat test
 
 ## Coverage
 
+[![codecov](https://codecov.io/gh/sector-3/protocol/branch/main/graph/badge.svg)](https://codecov.io/gh/sector-3/protocol)
+
 ```shell
 npx hardhat coverage
+```
+
+Check if coverage threshold has been met:
+
+```
+npx istanbul check-coverage --lines 90
 ```
 
 ## Deploy
