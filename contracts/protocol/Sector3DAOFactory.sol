@@ -9,6 +9,8 @@ contract Sector3DAOFactory {
 
   address[] public daos;
 
+  event DAODeployed(Sector3DAO dao);
+
   constructor() {
     owner = msg.sender;
   }
@@ -25,6 +27,7 @@ contract Sector3DAOFactory {
   function deployDAO(string calldata name, string calldata purpose, address token) public returns (address) {
     Sector3DAO dao = new Sector3DAO(name, purpose, token);
     daos.push(address(dao));
+    emit DAODeployed(dao);
     return address(dao);
   }
 
