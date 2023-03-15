@@ -29,6 +29,7 @@ npx hardhat test
 
 ```shell
 npx hardhat coverage
+open coverage/index.html
 ```
 
 Check if coverage threshold has been met:

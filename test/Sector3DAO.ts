@@ -27,27 +27,39 @@ describe("Sector3DAO", function () {
     });
 
     it("Should set the right owner", async function () {
-      const { sector3DAO, owner } = await loadFixture(deployFixture);
+      const { sector3DAO, owner, otherAccount } = await loadFixture(deployFixture);
 
       expect(await sector3DAO.owner()).to.equal(owner.address);
+
+      await sector3DAO.setOwner(otherAccount.address);
+      expect(await sector3DAO.owner()).to.equal(otherAccount.address);
     });
 
     it("Should set the right DAO name", async function () {
       const { sector3DAO } = await loadFixture(deployFixture);
 
       expect(await sector3DAO.name()).to.equal("Name Value");
+
+      await sector3DAO.setName("New Name");
+      expect(await sector3DAO.name()).to.equal("New Name");
     });
 
     it("Should set the right DAO purpose", async function () {
       const { sector3DAO } = await loadFixture(deployFixture);
 
       expect(await sector3DAO.purpose()).to.equal("Purpose Value");
+
+      await sector3DAO.setPurpose("New Purpose");
+      expect(await sector3DAO.purpose()).to.equal("New Purpose");
     });
 
     it("Should set the right DAO token", async function () {
       const { sector3DAO } = await loadFixture(deployFixture);
 
       expect(await sector3DAO.token()).to.equal("0x942d6e75465C3c248Eb8775472c853d2b56139fE");
+
+      await sector3DAO.setToken(ethers.constants.AddressZero);
+      expect(await sector3DAO.token()).to.equal(ethers.constants.AddressZero);
     });
   });
 
