@@ -54,32 +54,34 @@ contract Sector3DAO {
     owner = owner_;
   }
 
+  modifier onlyOwner() {
+    require(msg.sender == owner, "You are not authorized to perform this action.");
+    _;
+  }
+
+
   /**
    * Updates the DAO's name.
    */
-  function setName(string calldata name_) public {
-    require(msg.sender == owner, "You aren't the owner");
+  function setName(string calldata name_) public onlyOwner {
     name = name_;
   }
 
   /**
    * Updates the DAO's purpose.
    */
-  function setPurpose(string calldata purpose_) public {
-    require(msg.sender == owner, "You aren't the owner");
+  function setPurpose(string calldata purpose_) public onlyOwner {    
     purpose = purpose_;
   }
 
   /**
    * Updates the DAO's token.
    */
-  function setToken(address token_) public {
-    require(msg.sender == owner, "You aren't the owner");
+  function setToken(address token_) public onlyOwner {
     token = token_;
   }
 
-  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget, address gatingNFT) public returns (Sector3DAOPriority) {
-    require(msg.sender == owner, "You aren't the owner");
+  function deployPriority(string calldata title, address rewardToken, uint16 epochDurationInDays, uint256 epochBudget, address gatingNFT) public onlyOwner returns (Sector3DAOPriority) {
     Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget, gatingNFT);
     priorities.push(priority);
     return priority;
@@ -89,8 +91,7 @@ contract Sector3DAO {
     return priorities;
   }
 
-  function removePriority(Sector3DAOPriority priority) public {
-    require(msg.sender == owner, "You aren't the owner");
+  function removePriority(Sector3DAOPriority priority) public onlyOwner {        
     Sector3DAOPriority[] memory prioritiesAfterRemoval = new Sector3DAOPriority[](priorities.length - 1);
     uint16 prioritiesIndex = 0;
     for (uint16 i = 0; i < prioritiesAfterRemoval.length; i++) {
@@ -102,4 +103,6 @@ contract Sector3DAO {
     }
     priorities = prioritiesAfterRemoval;
   }
+
+
 }

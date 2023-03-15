@@ -28,6 +28,7 @@ contract Sector3DAOPriority is IPriority {
   error NoRewardForEpoch();
   error RewardAlreadyClaimed();
   error NoGatingNFTOwnership();
+  error InvalidInput();
 
   constructor(address dao_, string memory title_, address rewardToken_, uint16 epochDurationInDays, uint256 epochBudget_, address gatingNFT_) {
     dao = dao_;
@@ -53,22 +54,27 @@ contract Sector3DAOPriority is IPriority {
    */
   function addContribution(string memory description, string memory proofURL, uint8 hoursSpent, uint8 alignmentPercentage) public {
     if (address(gatingNFT) != address(0x0)) {
-      if (gatingNFT.balanceOf(msg.sender) == 0) {
-        revert NoGatingNFTOwnership();
-      }
+        if (gatingNFT.balanceOf(msg.sender) == 0) {
+            revert NoGatingNFTOwnership();
+        }
     }
+    if(bytes(description).length == 0 || bytes(proofURL).length == 0){
+        revert InvalidInput();
+    }
+    uint16 epochIndex = getEpochIndex();
     Contribution memory contribution = Contribution({
-      timestamp: block.timestamp,
-      epochIndex: getEpochIndex(),
-      contributor: msg.sender,
-      description: description,
-      proofURL: proofURL,
-      hoursSpent: hoursSpent,
-      alignmentPercentage: alignmentPercentage
+        timestamp: block.timestamp,
+        epochIndex: epochIndex,
+        contributor: msg.sender,
+        description: description,
+        proofURL: proofURL,
+        hoursSpent: hoursSpent,
+        alignmentPercentage: alignmentPercentage
     });
     contributions.push(contribution);
     emit ContributionAdded(contribution);
-  }
+}
+
 
   function getContributions() public view returns (Contribution[] memory) {
     return contributions;
@@ -113,11 +119,12 @@ contract Sector3DAOPriority is IPriority {
     if (rewardClaimed) {
       revert RewardAlreadyClaimed();
     }
-    rewardToken.transfer(msg.sender, epochReward);
+
     claims[epochIndex][msg.sender] = true;
     claimsBalance += epochReward;
+    require(rewardToken.transfer(msg.sender, epochReward), "Reward transfer failed");
     emit RewardClaimed(epochIndex, msg.sender, epochReward);
-  }
+}
 
   /**
    * Calculates a contributor's token allocation of the budget for a given epoch.
@@ -129,12 +136,14 @@ contract Sector3DAOPriority is IPriority {
     return epochBudget * allocationPercentage / 100;
   }
 
-  /**
-   * Checks if a contributor's reward has been claimed for a given epoch.
+
+   /** 
+    * Checks if a contributor's reward has been claimed for a given epoch.
    */
   function isRewardClaimed(uint16 epochIndex, address contributor) public view returns (bool) {
     return claims[epochIndex][contributor];
   }
+
 
   /**
    * Calculates a contributor's percentage allocation of the budget for a given epoch.
