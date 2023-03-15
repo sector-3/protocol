@@ -94,8 +94,8 @@ describe("Sector3DAOPriority", function () {
     const rewardToken = await SECTOR3.deploy();
     const epochDurationInDays = 7;  // Weekly
     const epochBudget = (2.049 * 1e18).toString();  // 2.049
-    const Sector3Dove = await ethers.getContractFactory("Sector3Dove");
-    const gatingNFT = await Sector3Dove.deploy();
+    const S3DOVE = await ethers.getContractFactory("S3DOVE");
+    const gatingNFT = await S3DOVE.deploy();
     const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT.address);
 
     return { sector3DAOPriority, owner, otherAccount, rewardToken, gatingNFT };

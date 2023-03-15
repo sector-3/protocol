@@ -1,17 +1,17 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log('Deploying token/Sector3Dove.sol')
+  console.log('Deploying token/S3DOVE.sol')
   
   console.log('process.env.DEPLOYER_PRIVATE_KEY exists:', process.env.DEPLOYER_PRIVATE_KEY != undefined)
   console.log('process.env.ETHERSCAN_API_KEY exists:', process.env.ETHERSCAN_API_KEY != undefined)
   
-  const Sector3Dove = await ethers.getContractFactory("Sector3Dove");
-  const sector3Dove = await Sector3Dove.deploy();
+  const S3DOVE = await ethers.getContractFactory("S3DOVE");
+  const s3Dove = await S3DOVE.deploy();
 
-  await sector3Dove.deployed();
+  await s3Dove.deployed();
 
-  console.log(`Sector3Dove deployed to ${sector3Dove.address}`);
+  console.log(`S3DOVE deployed to ${s3Dove.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

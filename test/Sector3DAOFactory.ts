@@ -37,7 +37,7 @@ describe("Sector3DAOFactory", function () {
 
       await sector3DAOFactory.deployDAO("DAO #1", "Purpose #1", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1");
       daos = await sector3DAOFactory.getDAOs();
-      console.log('daos:', daos);
+      // console.log('daos:', daos);
       expect(daos.length).to.equal(1);
 
       const Sector3DAO = await ethers.getContractFactory("Sector3DAO");
