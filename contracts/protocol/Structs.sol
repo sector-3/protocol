@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 struct Contribution {
   uint256 timestamp;
-  uint16 epochIndex;
+  uint16 epochNumber;
   address contributor;
   string description;
   string proofURL;
