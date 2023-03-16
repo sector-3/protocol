@@ -10,9 +10,10 @@ describe("Sector3DAOPriority", function () {
     console.log('deployWeeklyFixture')
 
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
-    // console.log('owner.address:', owner.address);
-    // console.log('otherAccount.address:', otherAccount.address);
+    const [owner, otherAccount, user1] = await ethers.getSigners();
+    console.log('owner.address:', owner.address);
+    console.log('otherAccount.address:', otherAccount.address);
+    console.log('user1.address:', user1.address);
     
     const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
     const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
@@ -24,7 +25,7 @@ describe("Sector3DAOPriority", function () {
     const gatingNFT = ethers.constants.AddressZero;
     const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken.address, epochDurationInDays, epochBudget, gatingNFT);
 
-    return { sector3DAOPriority, owner, otherAccount, rewardToken };
+    return { sector3DAOPriority, owner, otherAccount, user1, rewardToken };
   }
 
   // We define a fixture to reuse the same setup in every test.
@@ -470,7 +471,7 @@ describe("Sector3DAOPriority", function () {
       );
 
       await sector3DAOPriority.addContribution(
-        "Description (test)",
+        "Description #2",
         "https://github.com/sector-3",
         5,
         60
@@ -480,11 +481,9 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      const epochNumber = 1;
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(epochNumber, owner.address);
-      // console.log("allocationPercentage:", allocationPercentage);
-      
-      expect(allocationPercentage).to.equal(100);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits('100'));
     });
 
     it("Should be 50% if two contributors", async function() {
@@ -498,7 +497,7 @@ describe("Sector3DAOPriority", function () {
       );
 
       await sector3DAOPriority.connect(otherAccount).addContribution(
-        "Description (test)",
+        "Description #2",
         "https://github.com/sector-3",
         5,
         60
@@ -510,11 +509,218 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      const epochNumber = 1;
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(epochNumber, owner.address);
-      // console.log("allocationPercentage:", allocationPercentage);
-      
-      expect(allocationPercentage).to.equal(50);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits('50'));
+    });
+
+    it("two contributors - 20%/80% alignmentPercentage - same hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        20
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        1,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits('20'));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits('80'));
+    });
+
+    it("two contributors - 0%/100% alignmentPercentage - same hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        0
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        1,
+        100
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits('0'));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits("100"));
+    });
+
+    it("two contributors - 100%/0% alignmentPercentage - same hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        100
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        1,
+        0
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits("100"));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits('0'));
+    });
+
+    it("two contributors - 0%/0% alignmentPercentage - same hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        0
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        1,
+        0
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits('0'));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits('0'));
+    });
+
+    it("two contributors - 20%/80% alignmentPercentage - 8/2 hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        8,
+        20
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        2,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits("50"));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits("50"));
+    });
+
+    it("two contributors - 20%/80% alignmentPercentage - 1/3 hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        20
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        3,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Expect 20/260 = 7.692307692307692307% and 240/260 = 92.307692307692307692%
+      const epochNumber1 = 1;
+      const allocationPercentageOwner = await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address);
+      console.log('allocationPercentageOwner:', allocationPercentageOwner);
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits("7.692307692307692307"));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits("92.307692307692307692"));
+    });
+
+    it("three contributors - 20%/100%/100% alignmentPercentage - 3/3/6 hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount, user1 } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        3,
+        20
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description #2",
+        "https://github.com/sector-3",
+        3,
+        100
+      );
+
+      await sector3DAOPriority.connect(user1).addContribution(
+        "Description #3",
+        "https://github.com/sector-3",
+        6,
+        100
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      // Expect 60/960 = 6.25%, 300/960 = 31.25%, 600/960 = 62.5%
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
+        .to.equal(ethers.utils.parseUnits("6.25"));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
+        .to.equal(ethers.utils.parseUnits("31.25"));
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, user1.address))
+        .to.equal(ethers.utils.parseUnits("62.5"));
     });
   });
 

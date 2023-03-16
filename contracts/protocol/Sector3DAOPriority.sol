@@ -123,8 +123,8 @@ contract Sector3DAOPriority is IPriority {
    * @notice Calculates a contributor's token allocation of the budget for a given epoch.
    */
   function getEpochReward(uint16 epochNumber, address contributor) public view returns (uint256) {
-    uint8 allocationPercentage = getAllocationPercentage(epochNumber, contributor);
-    return epochBudget * allocationPercentage / 100;
+    uint256 allocationPercentage = getAllocationPercentage(epochNumber, contributor);
+    return epochBudget * allocationPercentage / 100 ether;
   }
 
   /**
@@ -136,23 +136,27 @@ contract Sector3DAOPriority is IPriority {
 
   /**
    * @notice Calculates a contributor's percentage allocation of the budget for a given epoch.
+   * @return The percentage in `wei` units, e.g. 33333333333333333333 for 33.333333333333333333%.
    */
-  function getAllocationPercentage(uint16 epochNumber, address contributor) public view returns (uint8) {
-    uint16 hoursSpentContributor = 0;
-    uint16 hoursSpentAllContributors = 0;
-    for (uint16 i = 0; i < contributions.length; i++) {
-      Contribution memory contribution = contributions[i];
-      if (contribution.epochNumber == epochNumber) {
-        if (contribution.contributor == contributor) {
-          hoursSpentContributor += contribution.hoursSpent;
-        }
-        hoursSpentAllContributors += contribution.hoursSpent;
+  function getAllocationPercentage(uint16 epochNumber, address contributor) public view returns (uint256) {
+    uint256 weightContributor = 0;
+    uint256 weightAllContributors = 0;
+    Contribution[] memory epochContributions = getEpochContributions(epochNumber);
+    for (uint16 i = 0; i < epochContributions.length; i++) {
+      Contribution memory contribution = epochContributions[i];
+      if (contribution.alignmentPercentage == 0) {
+        continue;
       }
+      uint256 weight = uint256(contribution.hoursSpent) * uint256(contribution.alignmentPercentage);
+      if (contribution.contributor == contributor) {
+        weightContributor += weight;
+      }
+      weightAllContributors += weight;
     }
-    if (hoursSpentAllContributors == 0) {
+    if (weightAllContributors == 0) {
       return 0;
     } else {
-      return uint8(hoursSpentContributor * 100 / hoursSpentAllContributors);
+      return 100 ether * weightContributor / weightAllContributors;
     }
   }
 
