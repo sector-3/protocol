@@ -516,6 +516,32 @@ describe("Sector3DAOPriority", function () {
       
       expect(allocationPercentage).to.equal(50);
     });
+
+    it("two contributors - 20%/80% alignmentPercentage - same hoursSpent", async function() {
+      const { sector3DAOPriority, owner, otherAccount } = await loadFixture(deployWeeklyFixture);
+
+      await sector3DAOPriority.addContribution(
+        "Description #1",
+        "https://github.com/sector-3",
+        1,
+        20
+      );
+
+      await sector3DAOPriority.connect(otherAccount).addContribution(
+        "Description (test)",
+        "https://github.com/sector-3",
+        1,
+        80
+      );
+
+      // Increase the time by 1 week
+      const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
+      await time.increase(ONE_WEEK_IN_SECONDS);
+
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address)).to.equal(20);
+      expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address)).to.equal(80);
+    });
   });
 
   
