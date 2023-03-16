@@ -21,7 +21,7 @@ contract Sector3DAOPriority is IPriority {
   uint256 public claimsBalance;
 
   event ContributionAdded(Contribution contribution);
-  event RewardClaimed(uint16 epochIndex, address contributor, uint256 amount);
+  event RewardClaimed(uint16 epochNumber, address contributor, uint256 amount);
 
   error EpochNotYetEnded();
   error EpochNotYetFunded();
@@ -40,12 +40,13 @@ contract Sector3DAOPriority is IPriority {
   }
 
   /**
-   * Calculates the current epoch index based on the `Priority`'s start time and epoch duration.
+   * @notice Calculates the current epoch number based on the priority's start time and epoch duration.
+   * @return [1,2,3,...]
    */
-  function getEpochIndex() public view returns (uint16) {
+  function getEpochNumber() public view returns (uint16) {
     uint256 timePassedSinceStart = block.timestamp - startTime;
     uint256 epochDurationInSeconds = epochDuration * 1 days;
-    return uint16(timePassedSinceStart / epochDurationInSeconds);
+    return uint16(timePassedSinceStart / epochDurationInSeconds) + 1;
   }
 
   /**
@@ -59,7 +60,7 @@ contract Sector3DAOPriority is IPriority {
     }
     Contribution memory contribution = Contribution({
       timestamp: block.timestamp,
-      epochIndex: getEpochIndex(),
+      epochNumber: getEpochNumber(),
       contributor: msg.sender,
       description: description,
       proofURL: proofURL,
@@ -74,17 +75,17 @@ contract Sector3DAOPriority is IPriority {
     return contributions;
   }
 
-  function getEpochContributions(uint16 epochIndex) public view returns (Contribution[] memory) {
+  function getEpochContributions(uint16 epochNumber) public view returns (Contribution[] memory) {
     uint16 count = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
-      if (contributions[i].epochIndex == epochIndex) {
+      if (contributions[i].epochNumber == epochNumber) {
         count++;
       }
     }
     Contribution[] memory epochContributions = new Contribution[](count);
     count = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
-      if (contributions[i].epochIndex == epochIndex) {
+      if (contributions[i].epochNumber == epochNumber) {
         epochContributions[count] = contributions[i];
         count++;
       }
@@ -93,60 +94,55 @@ contract Sector3DAOPriority is IPriority {
   }
 
   /**
-   * Claims a contributor's reward for contributions made in a given epoch.
-   * 
-   * @param epochIndex The index of an epoch that has ended.
+   * @notice Claims a contributor's reward for contributions made in a given epoch.
+   * @dev Claims can only be made for an epoch that has ended.
    */
-  function claimReward(uint16 epochIndex) public {
-    if (epochIndex >= getEpochIndex()) {
+  function claimReward(uint16 epochNumber) public {
+    if (epochNumber >= getEpochNumber()) {
       revert EpochNotYetEnded();
     }
-    uint256 epochReward = getEpochReward(epochIndex, msg.sender);
+    uint256 epochReward = getEpochReward(epochNumber, msg.sender);
     if (epochReward == 0) {
       revert NoRewardForEpoch();
     }
-    bool epochFunded = isEpochFunded(epochIndex);
+    bool epochFunded = isEpochFunded(epochNumber);
     if (!epochFunded) {
       revert EpochNotYetFunded();
     }
-    bool rewardClaimed = isRewardClaimed(epochIndex, msg.sender);
+    bool rewardClaimed = isRewardClaimed(epochNumber, msg.sender);
     if (rewardClaimed) {
       revert RewardAlreadyClaimed();
     }
     rewardToken.transfer(msg.sender, epochReward);
-    claims[epochIndex][msg.sender] = true;
+    claims[epochNumber][msg.sender] = true;
     claimsBalance += epochReward;
-    emit RewardClaimed(epochIndex, msg.sender, epochReward);
+    emit RewardClaimed(epochNumber, msg.sender, epochReward);
   }
 
   /**
-   * Calculates a contributor's token allocation of the budget for a given epoch.
-   * 
-   * @param epochIndex The index of an epoch.
+   * @notice Calculates a contributor's token allocation of the budget for a given epoch.
    */
-  function getEpochReward(uint16 epochIndex, address contributor) public view returns (uint256) {
-    uint8 allocationPercentage = getAllocationPercentage(epochIndex, contributor);
+  function getEpochReward(uint16 epochNumber, address contributor) public view returns (uint256) {
+    uint8 allocationPercentage = getAllocationPercentage(epochNumber, contributor);
     return epochBudget * allocationPercentage / 100;
   }
 
   /**
-   * Checks if a contributor's reward has been claimed for a given epoch.
+   * @notice Checks if a contributor's reward has been claimed for a given epoch.
    */
-  function isRewardClaimed(uint16 epochIndex, address contributor) public view returns (bool) {
-    return claims[epochIndex][contributor];
+  function isRewardClaimed(uint16 epochNumber, address contributor) public view returns (bool) {
+    return claims[epochNumber][contributor];
   }
 
   /**
-   * Calculates a contributor's percentage allocation of the budget for a given epoch.
-   * 
-   * @param epochIndex The index of an epoch.
+   * @notice Calculates a contributor's percentage allocation of the budget for a given epoch.
    */
-  function getAllocationPercentage(uint16 epochIndex, address contributor) public view returns (uint8) {
+  function getAllocationPercentage(uint16 epochNumber, address contributor) public view returns (uint8) {
     uint16 hoursSpentContributor = 0;
     uint16 hoursSpentAllContributors = 0;
     for (uint16 i = 0; i < contributions.length; i++) {
       Contribution memory contribution = contributions[i];
-      if (contribution.epochIndex == epochIndex) {
+      if (contribution.epochNumber == epochNumber) {
         if (contribution.contributor == contributor) {
           hoursSpentContributor += contribution.hoursSpent;
         }
@@ -164,15 +160,15 @@ contract Sector3DAOPriority is IPriority {
    * @notice Checks if the smart contract has received enough funding to cover claims for a past epoch.
    * @dev Epochs without contributions are excluded from funding.
    */
-  function isEpochFunded(uint16 epochIndex) public view returns (bool) {
-    if (epochIndex >= getEpochIndex()) {
+  function isEpochFunded(uint16 epochNumber) public view returns (bool) {
+    if (epochNumber >= getEpochNumber()) {
       revert EpochNotYetEnded();
     }
-    if (getEpochContributions(epochIndex).length == 0) {
+    if (getEpochContributions(epochNumber).length == 0) {
       return false;
     }
     uint16 numberOfEpochsWithContributions = 0;
-    for (uint16 i = 0; i <= epochIndex; i++) {
+    for (uint16 i = 0; i <= epochNumber; i++) {
       if (getEpochContributions(i).length > 0) {
         numberOfEpochsWithContributions++;
       }
