@@ -71,12 +71,14 @@ describe("Sector3DAO", function () {
       // console.log('priorities:', priorities);
       expect(priorities.length).to.equal(0);
 
-      await sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString(), ethers.constants.AddressZero);
+      await expect(sector3DAO.deployPriority('Priority #1', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 7, (2.049 * 1e18).toString(), ethers.constants.AddressZero))
+        .to.emit(sector3DAO, "PriorityDeployed");
       priorities = await sector3DAO.getPriorities();
       // console.log('priorities:', priorities);
       expect(priorities.length).to.equal(1);
 
-      await sector3DAO.deployPriority('Priority #2', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 14, (4.098 * 1e18).toString(), ethers.constants.AddressZero);
+      await expect(sector3DAO.deployPriority('Priority #2', '0x942d6e75465C3c248Eb8775472c853d2b56139fE', 14, (4.098 * 1e18).toString(), ethers.constants.AddressZero))
+        .to.emit(sector3DAO, "PriorityDeployed");
       priorities = await sector3DAO.getPriorities();
       // console.log('priorities:', priorities);
       expect(priorities.length).to.equal(2);

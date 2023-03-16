@@ -35,7 +35,7 @@ describe("Sector3DAOFactory", function () {
       // console.log('daos:', daos);
       expect(daos.length).to.equal(0);
 
-      expect(await sector3DAOFactory.deployDAO("DAO #1", "Purpose #1", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1"))
+      await expect(sector3DAOFactory.deployDAO("DAO #1", "Purpose #1", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1"))
         .to.emit(sector3DAOFactory, "DAODeployed");
       daos = await sector3DAOFactory.getDAOs();
       // console.log('daos:', daos);
@@ -45,7 +45,7 @@ describe("Sector3DAOFactory", function () {
       const sector3DAO = await Sector3DAO.attach(daos[0]);
       expect(await sector3DAO.owner()).to.equal(owner.address);
 
-      expect(await sector3DAOFactory.deployDAO("DAO #2", "Purpose #2", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1"))
+      await expect(sector3DAOFactory.deployDAO("DAO #2", "Purpose #2", "0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1"))
         .to.emit(sector3DAOFactory, "DAODeployed");
       daos = await sector3DAOFactory.getDAOs();
       // console.log('daos:', daos);
