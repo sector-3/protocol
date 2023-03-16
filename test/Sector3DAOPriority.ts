@@ -715,8 +715,6 @@ describe("Sector3DAOPriority", function () {
 
       // Expect 60/960 = 6.25%, 300/960 = 31.25%, 600/960 = 62.5%
       const epochNumber1 = 1;
-      const allocationPercentageOwner = await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address);
-      console.log('allocationPercentageOwner:', allocationPercentageOwner);
       expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, owner.address))
         .to.equal(ethers.utils.parseUnits("6.25"));
       expect(await sector3DAOPriority.getAllocationPercentage(epochNumber1, otherAccount.address))
