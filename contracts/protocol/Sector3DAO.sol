@@ -39,6 +39,8 @@ contract Sector3DAO {
    */
   Sector3DAOPriority[] public priorities;
 
+  event PriorityDeployed(Sector3DAOPriority);
+
   constructor(string memory name_, string memory purpose_, address token_) {
     name = name_;
     purpose = purpose_;
@@ -82,6 +84,7 @@ contract Sector3DAO {
     require(msg.sender == owner, "You aren't the owner");
     Sector3DAOPriority priority = new Sector3DAOPriority(address(this), title, rewardToken, epochDurationInDays, epochBudget, gatingNFT);
     priorities.push(priority);
+    emit PriorityDeployed(priority);
     return priority;
   }
 
