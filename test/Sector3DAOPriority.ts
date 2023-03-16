@@ -153,14 +153,14 @@ describe("Sector3DAOPriority", function () {
   });
 
   
-  describe("getEpochIndex - EpochDuration.Weekly", async function() {
-    it("Should return 0 immediately after deployment", async function() {
+  describe("getEpochNumber - weekly fixture", async function() {
+    it("Should return #1 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 1 after 1 week", async function() {
+    it("Should return #2 after 1 week", async function() {
       const { sector3DAOPriority } = await loadFixture(deployWeeklyFixture);
 
       // Increase the time by 1 week
@@ -169,19 +169,19 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(2);
     });
   });
 
   
-  describe("getEpochIndex - EpochDuration.Biweekly", async function() {
-    it("Should return 0 immediately after deployment", async function() {
+  describe("getEpochNumber - biweekly fixture", async function() {
+    it("Should return #1 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 0 after 1 week", async function() {
+    it("Should return #1 after 1 week", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
       // Increase the time by 1 week
@@ -190,10 +190,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 1 after 2 weeks", async function() {
+    it("Should return #2 after 2 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
       // Increase the time by 2 weeks
@@ -202,10 +202,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 2 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(2);
     });
 
-    it("Should return 1 after 3 weeks", async function() {
+    it("Should return #2 after 3 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
       // Increase the time by 3 weeks
@@ -214,10 +214,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 3 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(2);
     });
 
-    it("Should return 2 after 4 weeks", async function() {
+    it("Should return #3 after 4 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployBiweeklyFixture);
 
       // Increase the time by 4 weeks
@@ -226,19 +226,19 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 4 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(2);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(3);
     });
   });
 
   
-  describe("getEpochIndex - EpochDuration.Monthly", async function() {
-    it("Should return 0 immediately after deployment", async function() {
+  describe("getEpochNumber - monthly fixture", async function() {
+    it("Should return #1 immediately after deployment", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 0 after 1 week", async function() {
+    it("Should return #1 after 1 week", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
       // Increase the time by 1 week
@@ -247,10 +247,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 0 after 2 weeks", async function() {
+    it("Should return #1 after 2 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
       // Increase the time by 2 weeks
@@ -259,10 +259,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 2 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 0 after 3 weeks", async function() {
+    it("Should return #1 after 3 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
       // Increase the time by 3 weeks
@@ -271,10 +271,10 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 3 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(0);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(1);
     });
 
-    it("Should return 1 after 4 weeks", async function() {
+    it("Should return #2 after 4 weeks", async function() {
       const { sector3DAOPriority } = await loadFixture(deployMonthlyFixture);
 
       // Increase the time by 4 weeks
@@ -283,7 +283,7 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 4 weeks later:", await time.latest());
 
-      expect(await sector3DAOPriority.getEpochIndex()).to.equal(1);
+      expect(await sector3DAOPriority.getEpochNumber()).to.equal(2);
     });
   });
 
@@ -346,7 +346,7 @@ describe("Sector3DAOPriority", function () {
       const contribution = contributions[0];
       // console.log("contribution:", contribution);
 
-      expect(contribution.epochIndex).to.equal(0);
+      expect(contribution.epochNumber).to.equal(1);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.hoursSpent).to.equal(10);
@@ -373,7 +373,7 @@ describe("Sector3DAOPriority", function () {
       const contribution = contributions[0];
       // console.log("contribution:", contribution);
 
-      expect(contribution.epochIndex).to.equal(1);
+      expect(contribution.epochNumber).to.equal(2);
       expect(contribution.contributor).to.equal(owner.address);
       expect(contribution.description).to.equal("Description (test)");
       expect(contribution.hoursSpent).to.equal(10);
@@ -407,7 +407,7 @@ describe("Sector3DAOPriority", function () {
       const contribution1 = contributions[0];
       // console.log("contribution1:", contribution1);
 
-      expect(contribution1.epochIndex).to.equal(1);
+      expect(contribution1.epochNumber).to.equal(2);
       expect(contribution1.contributor).to.equal(owner.address);
       expect(contribution1.description).to.equal("Description (test)");
       expect(contribution1.hoursSpent).to.equal(10);
@@ -416,7 +416,7 @@ describe("Sector3DAOPriority", function () {
       const contribution2 = contributions[1];
       // console.log("contribution2:", contribution2);
 
-      expect(contribution2.epochIndex).to.equal(1);
+      expect(contribution2.epochNumber).to.equal(2);
       expect(contribution2.contributor).to.equal(owner.address);
       expect(contribution2.description).to.equal("Description 2 (test)");
       expect(contribution2.hoursSpent).to.equal(12);
@@ -477,12 +477,11 @@ describe("Sector3DAOPriority", function () {
       );
 
       // Increase the time by 1 week
-      // console.log("Current time:", await time.latest());
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
-      // console.log("Time 1 week later:", await time.latest());
 
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0, owner.address);
+      const epochNumber = 1;
+      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(epochNumber, owner.address);
       // console.log("allocationPercentage:", allocationPercentage);
       
       expect(allocationPercentage).to.equal(100);
@@ -511,7 +510,8 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(0, owner.address);
+      const epochNumber = 1;
+      const allocationPercentage = await sector3DAOPriority.getAllocationPercentage(epochNumber, owner.address);
       // console.log("allocationPercentage:", allocationPercentage);
       
       expect(allocationPercentage).to.equal(50);
@@ -543,7 +543,8 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      const epochReward = await sector3DAOPriority.getEpochReward(0, owner.address);
+      const epochNumber = 1;
+      const epochReward = await sector3DAOPriority.getEpochReward(epochNumber, owner.address);
       // console.log("epochReward:", epochReward);
       
       expect(epochReward).to.equal(ethers.utils.parseUnits("2.049"));
@@ -572,7 +573,8 @@ describe("Sector3DAOPriority", function () {
       await time.increase(ONE_WEEK_IN_SECONDS);
       // console.log("Time 1 week later:", await time.latest());
 
-      const epochReward = await sector3DAOPriority.getEpochReward(0, owner.address);
+      const epochNumber = 1;
+      const epochReward = await sector3DAOPriority.getEpochReward(epochNumber, owner.address);
       // console.log("epochReward:", epochReward);
       
       expect(epochReward).to.equal(ethers.utils.parseUnits("1.0245"));
@@ -591,7 +593,8 @@ describe("Sector3DAOPriority", function () {
         60
       );
 
-      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+      const epochNumber = 1;
+      await expect(sector3DAOPriority.claimReward(1)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "EpochNotYetEnded"
       );
@@ -611,7 +614,8 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+      const epochNumber1 = 1;
+      await expect(sector3DAOPriority.claimReward(epochNumber1)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "EpochNotYetFunded"
       );
@@ -631,7 +635,8 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Attempt to claim rewards for the second epoch
-      await expect(sector3DAOPriority.claimReward(1)).to.be.revertedWithCustomError(
+      const epochNumber2 = 2;
+      await expect(sector3DAOPriority.claimReward(epochNumber2)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "EpochNotYetFunded"
       );
@@ -651,7 +656,8 @@ describe("Sector3DAOPriority", function () {
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+      const epochNumber = 1;
+      await expect(sector3DAOPriority.claimReward(epochNumber)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "NoRewardForEpoch"
       );
@@ -679,7 +685,8 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward
-      await sector3DAOPriority.claimReward(0);
+      const epochNumber = 1;
+      await sector3DAOPriority.claimReward(epochNumber);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("0"));
     });
 
@@ -711,12 +718,13 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (owner account)
-      await sector3DAOPriority.claimReward(0);
+      const epochNumber = 1;
+      await sector3DAOPriority.claimReward(epochNumber);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
 
       // Claim reward (other account)
       expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(0);
-      await sector3DAOPriority.connect(otherAccount).claimReward(0);
+      await sector3DAOPriority.connect(otherAccount).claimReward(epochNumber);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(0);
       expect(await rewardToken.balanceOf(otherAccount.address)).to.equal(ethers.utils.parseUnits("1.0245"));
     });
@@ -749,11 +757,12 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (owner account)
-      await sector3DAOPriority.claimReward(0);
+      const epochNumber = 1;
+      await sector3DAOPriority.claimReward(epochNumber);
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
 
       // Claim reward twice (owner account)
-      await expect(sector3DAOPriority.claimReward(0)).to.be.revertedWithCustomError(
+      await expect(sector3DAOPriority.claimReward(epochNumber)).to.be.revertedWithCustomError(
         sector3DAOPriority,
         "RewardAlreadyClaimed"
       );
@@ -763,17 +772,18 @@ describe("Sector3DAOPriority", function () {
 
 
   describe("isRewardClaimed", async function() {
-    it("epochIndex[0] - 0 contributions", async function() {
+    it("epoch #1 - 0 contributions", async function() {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       // Increase the time by 1 week
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
+      const epochNumber = 1;
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber, owner.address)).to.equal(false);
     });
 
-    it("epochIndex[0] - 0 claims", async function() {
+    it("epoch #1 - 0 claims", async function() {
       const { sector3DAOPriority, owner } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution(
@@ -787,10 +797,11 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
+      const epochNumber = 1;
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber, owner.address)).to.equal(false);
     });
 
-    it("epochIndex[0] - 1 claim", async function() {
+    it("epoch #1 - 1 claim", async function() {
       const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution(
@@ -809,12 +820,13 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (owner account)
-      await sector3DAOPriority.claimReward(0);
+      const epochNumber1 = 1;
+      await sector3DAOPriority.claimReward(epochNumber1);
 
-      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(true);
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber1, owner.address)).to.equal(true);
     });
 
-    it("epochIndex[1] - 0 claims", async function() {
+    it("epoch #2 - 0 claims", async function() {
       const { sector3DAOPriority, owner, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.addContribution(
@@ -833,9 +845,10 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (owner account)
-      await sector3DAOPriority.claimReward(0);
+      const epochNumber1 = 1;
+      await sector3DAOPriority.claimReward(epochNumber1);
 
-      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(true);
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber1, owner.address)).to.equal(true);
 
       await sector3DAOPriority.addContribution(
         "Description",
@@ -847,10 +860,11 @@ describe("Sector3DAOPriority", function () {
       // Increase the time by 1 week
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isRewardClaimed(1, owner.address)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber2, owner.address)).to.equal(false);
     });
 
-    it("epochIndex[0] - 1 claim by another account", async function() {
+    it("epoch #1 - 1 claim by another account", async function() {
       const { sector3DAOPriority, owner, otherAccount, rewardToken } = await loadFixture(deployWeeklyFixture);
 
       await sector3DAOPriority.connect(otherAccount).addContribution(
@@ -869,10 +883,11 @@ describe("Sector3DAOPriority", function () {
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
       // Claim reward (other account)
-      await sector3DAOPriority.connect(otherAccount).claimReward(0);
+      const epochNumber1 = 1;
+      await sector3DAOPriority.connect(otherAccount).claimReward(epochNumber1);
 
-      expect(await sector3DAOPriority.isRewardClaimed(0, owner.address)).to.equal(false);
-      expect(await sector3DAOPriority.isRewardClaimed(0, otherAccount.address)).to.equal(true);
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber1, owner.address)).to.equal(false);
+      expect(await sector3DAOPriority.isRewardClaimed(epochNumber1, otherAccount.address)).to.equal(true);
     });
   });
 
@@ -885,13 +900,15 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      // Expect false because no contributions were made
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
     });
 
     it("1st and 2nd epoch without contributions", async function() {
@@ -901,6 +918,8 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
+      const epochNumber1 = 1;
+      const epochNumber2 = 2;
       expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
 
       // Increase the time by 1 week
@@ -931,27 +950,29 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
 
       // Increase the time by 1 week
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("4.098"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
     });
 
     it("1st epoch with contributions, 2nd with contributions", async function() {
@@ -968,7 +989,8 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
 
       await sector3DAOPriority.addContribution(
         "Description",
@@ -980,22 +1002,23 @@ describe("Sector3DAOPriority", function () {
       // Increase the time by 1 week
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("4.098"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(true);
     });
 
     it("1st epoch without contributions, 2nd with contributions", async function() {
@@ -1005,7 +1028,8 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
 
       await sector3DAOPriority.addContribution(
         "Description",
@@ -1017,22 +1041,23 @@ describe("Sector3DAOPriority", function () {
       // Increase the time by 1 week
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(true);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("4.098"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(true);
     });
 
     it("pre-funded - 1st epoch without contributions, 2nd with contributions", async function() {
@@ -1046,7 +1071,8 @@ describe("Sector3DAOPriority", function () {
       const ONE_WEEK_IN_SECONDS = 7 * 24 * 60 * 60;
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
 
       await sector3DAOPriority.addContribution(
         "Description",
@@ -1058,8 +1084,9 @@ describe("Sector3DAOPriority", function () {
       // Increase the time by 1 week
       await time.increase(ONE_WEEK_IN_SECONDS);
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(true);
     });
 
     it("1st epoch - edge cases", async function() {
@@ -1080,19 +1107,20 @@ describe("Sector3DAOPriority", function () {
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.048"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.048"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
+      const epochNumber = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("0.001"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber)).to.equal(true);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("0.001"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.050"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber)).to.equal(true);
     });
 
     it("2nd epoch - edge cases", async function() {
@@ -1123,36 +1151,38 @@ describe("Sector3DAOPriority", function () {
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.048"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.048"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(false);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      const epochNumber1 = 1;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(false);
+      const epochNumber2 = 2;
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("0.001"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("0.001"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.050"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.047"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("4.097"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(false);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(false);
 
       // Transfer funding to the contract
       await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("0.001"));
       expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("4.098"));
 
-      expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
-      expect(await sector3DAOPriority.isEpochFunded(1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
+      expect(await sector3DAOPriority.isEpochFunded(epochNumber2)).to.equal(true);
     });
   });
 
@@ -1174,12 +1204,13 @@ describe("Sector3DAOPriority", function () {
     await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
     expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-    expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+    const epochNumber1 = 1;
+    expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
     expect(await sector3DAOPriority.claimsBalance()).to.equal(0);
 
-    await sector3DAOPriority.claimReward(0);
+    await sector3DAOPriority.claimReward(epochNumber1);
 
-    expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+    expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
     expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(0);
     expect(await sector3DAOPriority.claimsBalance()).to.equal(ethers.utils.parseUnits("2.049"));
   });
@@ -1209,12 +1240,13 @@ describe("Sector3DAOPriority", function () {
     await rewardToken.transfer(sector3DAOPriority.address, ethers.utils.parseUnits("2.049"));
     expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("2.049"));
 
-    expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+    const epochNumber1 = 1;
+    expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
     expect(await sector3DAOPriority.claimsBalance()).to.equal(0);
 
-    await sector3DAOPriority.claimReward(0);
+    await sector3DAOPriority.claimReward(epochNumber1);
 
-    expect(await sector3DAOPriority.isEpochFunded(0)).to.equal(true);
+    expect(await sector3DAOPriority.isEpochFunded(epochNumber1)).to.equal(true);
     expect(await rewardToken.balanceOf(sector3DAOPriority.address)).to.equal(ethers.utils.parseUnits("1.0245"));
     expect(await sector3DAOPriority.claimsBalance()).to.equal(ethers.utils.parseUnits("1.0245"));
   });
