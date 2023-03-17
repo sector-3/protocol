@@ -8,6 +8,6 @@
 
 ## Sector#3 Contribution
 
-<!--- Please add this pull request as a DAO contribution on Sector#3:  https://sepolia.sector3.xyz -->
+<!--- Please add this pull request as a DAO contribution on Sector#3:  https://sector3.xyz -->
 
-- [ ] Reported contribution at https://sepolia.sector3.xyz/v1/daos/0xB1932B5ba9Dfd0a2dCFa08140eb272DC60804699
+- [ ] Reported contribution at https://sector3.xyz/v1/daos/0x62Da9C79137dC9A8a6AdB1381476a1874CeCa9EE
