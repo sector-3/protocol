@@ -22,6 +22,10 @@ const config: HardhatUserConfig = {
       url: "https://rpc.ankr.com/eth_sepolia",
       accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
     },
+    optimisticEthereum: {
+      url: "https://rpc.ankr.com/optimism",
+      accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
+    },
     mainnet: {
       url: "https://rpc.ankr.com/eth",
       accounts: [ String(process.env.DEPLOYER_PRIVATE_KEY) ]
@@ -31,6 +35,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       goerli: String(process.env.ETHERSCAN_API_KEY),
       sepolia: String(process.env.ETHERSCAN_API_KEY),
+      optimisticEthereum: String(process.env.ETHERSCAN_API_KEY),
       mainnet: String(process.env.ETHERSCAN_API_KEY)
     }
   }
