@@ -64,8 +64,20 @@ Verify a contract on Etherscan:
 npx hardhat verify --network <network> <contract address> <constructor parameters>
 ```
 
-### DAO Factory Deployments
+## Deployments
+
+### Governance
+
+- Optimism: https://optimistic.etherscan.io/address/...
+- Mainnet: https://etherscan.io/address/0x1c9a7ced4cadb9c5a65e564e73091912aaec7494
+
+### Protocol V1
 
 - Sepolia: https://sepolia.etherscan.io/address/0x293aEF46130ca53868b27E3716D1DB653918d137
 - Optimism: https://optimistic.etherscan.io/address/0x942d6e75465C3c248Eb8775472c853d2b56139fE
 - Mainnet: https://etherscan.io/address/0x7d480f3a2B5F8f45CbAbe8c0833924549dd1eB12
+
+### Token
+
+- Optimism: https://optimistic.etherscan.io/token/0xe5ec44dd7d49e6edf31878e55dec12eb79bd10ae
+- Mainnet: https://etherscan.io/token/0x610210aa5d51bf26cbce146a5992d2feebc27db1
