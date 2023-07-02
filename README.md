@@ -68,7 +68,7 @@ npx hardhat verify --network <network> <contract address> <constructor parameter
 
 ### Governance
 
-- Optimism: https://optimistic.etherscan.io/address/...
+- Optimism: https://optimistic.etherscan.io/address/0x8087dE46076212A21EA5cD8b4368BCbd826d7B32
 - Mainnet: https://etherscan.io/address/0x1c9a7ced4cadb9c5a65e564e73091912aaec7494
 
 ### Protocol V1

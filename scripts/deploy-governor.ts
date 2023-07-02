@@ -7,7 +7,7 @@ async function main() {
   console.log('process.env.ETHERSCAN_API_KEY exists:', process.env.ETHERSCAN_API_KEY != undefined)
   
   const Sector3Governor = await ethers.getContractFactory("Sector3Governor");
-  const sector3Governor = await Sector3Governor.deploy('0x610210AA5D51bf26CBce146A5992D2FEeBc27dB1');
+  const sector3Governor = await Sector3Governor.deploy('0xe5ec44dd7d49e6edf31878e55dec12eb79bd10ae');
 
   await sector3Governor.deployed();
 
