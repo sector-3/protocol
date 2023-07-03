@@ -8,6 +8,6 @@
 
 ## Sector#3 Contribution
 
-<!--- Please add this pull request as a DAO contribution on Sector#3:  https://sector3.xyz -->
+<!--- Please add this pull request as a DAO contribution on Sector#3:  https://optimism.sector3.xyz -->
 
-- [ ] Reported contribution at https://sector3.xyz/v1/daos/0x62Da9C79137dC9A8a6AdB1381476a1874CeCa9EE
+- [ ] Reported contribution at https://optimism.sector3.xyz/v1/daos/0x66440677150b7871F32961E52B4B9d3A46E3C0bC
