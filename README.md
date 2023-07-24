@@ -2,6 +2,10 @@
 
 Sector#3 smart contracts
 
+## Milestones
+
+https://github.com/sector-3/protocol/milestones
+
 ## Contributions
 
 After you make contributions to this repo, report them in the Sector#3 dApp: [Protocol Development 👷‍♀️](https://optimism.sector3.xyz/v1/priorities/0x3F1C5890e97636E7d8e1f70b35D56fB2832Eab3c)
