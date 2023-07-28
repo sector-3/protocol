@@ -7,12 +7,13 @@ async function main() {
   console.log('process.env.ETHERSCAN_API_KEY exists:', process.env.ETHERSCAN_API_KEY != undefined)
   
   const Sector3DAOPriority = await ethers.getContractFactory("Sector3DAOPriority");
-  const dao = "0x96Bf89193E2A07720e42bA3AD736128a45537e63";  // Sector#3
+  const dao = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";  // Sector#3
   const title = "<priority title>";
   const rewardToken = "0x942d6e75465C3c248Eb8775472c853d2b56139fE";  // Sector#3
   const epochDurationInDays = 7;  // Weekly
   const epochBudget = (2.049 * 1e18).toString();  // 2.049 = "2049000000000000000"
-  const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDurationInDays, epochBudget);
+  const gatingNFT = ethers.constants.AddressZero;
+  const sector3DAOPriority = await Sector3DAOPriority.deploy(dao, title, rewardToken, epochDurationInDays, epochBudget, gatingNFT);
 
   await sector3DAOPriority.deployed();
 
