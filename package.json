@@ -1,5 +1,5 @@
 {
-  "name": "section3-contracts",
+  "name": "sector3-contracts",
   "version": "1.5.0-SNAPSHOT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
